@@ -1,42 +1,8 @@
 import SwiftUI
-import SwiftData
 
-@main
-struct BDMApp: App {
-    @State private var appearance = AppearanceManager()
-
-    var body: some Scene {
-        WindowGroup {
-            ContentView()
-                .environment(appearance)
-                .preferredColorScheme(appearance.theme.colorScheme)
-                .frame(minWidth: 800, minHeight: 500)
-        }
-        .windowStyle(.automatic)
-        .modelContainer(for: [
-            DownloadItem.self,
-            DownloadSegment.self,
-            DownloadThreadRange.self,
-            RoutingRule.self,
-        ])
-
-        Settings {
-            SettingsView()
-                .environment(appearance)
-                .frame(minWidth: 600, minHeight: 450)
-        }
-
-        MenuBarExtra("BDM", systemImage: "arrow.down.circle.fill") {
-            MenuBarContentView()
-        }
-        .menuBarExtraStyle(.menu)
-    }
-}
-
-// MARK: - Menu Bar Content
-
-struct MenuBarContentView: View {
+struct MenuBarView: View {
     var body: some View {
+        // Active download count and total speed
         Text("0 Active Downloads — 0 B/s")
             .font(.caption)
 
@@ -54,6 +20,7 @@ struct MenuBarContentView: View {
             if let window = NSApp.windows.first(where: { $0.canBecomeMain }) {
                 window.makeKeyAndOrderFront(nil)
             }
+            // Post notification to trigger the Add URLs sheet
             NotificationCenter.default.post(name: .menuBarAddURLs, object: nil)
         }
         .keyboardShortcut("n", modifiers: .command)
