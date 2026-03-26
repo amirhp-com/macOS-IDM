@@ -174,27 +174,60 @@ struct NetworkSettingsTab: View {
     @AppStorage("bdm.network.batteryLimit") private var batteryLimit = 5
     @AppStorage("bdm.network.domainLimit") private var domainLimit = 4
     @AppStorage("bdm.scheduler.enabled") private var schedulerEnabled = false
+    @AppStorage("bdm.scheduler.scheduleType") private var scheduleType = "daily"
+    @AppStorage("bdm.scheduler.startTime") private var startTimeInterval: Double = 32400 // 09:00
+    @AppStorage("bdm.scheduler.stopTime") private var stopTimeInterval: Double = 79200 // 22:00
+    @AppStorage("bdm.scheduler.pauseOutside") private var pauseOutside = true
+    @AppStorage("bdm.scheduler.autoResume") private var autoResume = true
+
+    private var startTime: Binding<Date> {
+        Binding(
+            get: { Calendar.current.startOfDay(for: Date()).addingTimeInterval(startTimeInterval) },
+            set: { startTimeInterval = $0.timeIntervalSince(Calendar.current.startOfDay(for: $0)) }
+        )
+    }
+
+    private var stopTime: Binding<Date> {
+        Binding(
+            get: { Calendar.current.startOfDay(for: Date()).addingTimeInterval(stopTimeInterval) },
+            set: { stopTimeInterval = $0.timeIntervalSince(Calendar.current.startOfDay(for: $0)) }
+        )
+    }
 
     var body: some View {
         Form {
             Section("Bandwidth") {
-                HStack {
-                    Text("Global speed limit")
-                    Spacer()
-                    TextField("MB/s", value: $speedLimit, format: .number)
-                        .frame(width: 60)
-                    Text("MB/s (0 = unlimited)")
+                VStack(alignment: .leading, spacing: 4) {
+                    HStack(alignment: .firstTextBaseline) {
+                        Text("Global speed limit")
+                        Spacer()
+                        TextField("0", value: $speedLimit, format: .number)
+                            .textFieldStyle(.roundedBorder)
+                            .frame(width: 80)
+                            .multilineTextAlignment(.trailing)
+                        Text("MB/s")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    Text("Set to 0 for unlimited bandwidth.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
                 Toggle("Throttle on battery", isOn: $throttleOnBattery)
                 if throttleOnBattery {
-                    HStack {
-                        Text("Battery throttle limit")
-                        Spacer()
-                        TextField("MB/s", value: $batteryLimit, format: .number)
-                            .frame(width: 60)
-                        Text("MB/s")
+                    VStack(alignment: .leading, spacing: 4) {
+                        HStack(alignment: .firstTextBaseline) {
+                            Text("Battery throttle limit")
+                            Spacer()
+                            TextField("5", value: $batteryLimit, format: .number)
+                                .textFieldStyle(.roundedBorder)
+                                .frame(width: 80)
+                                .multilineTextAlignment(.trailing)
+                            Text("MB/s")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                        Text("Speed limit applied when running on battery power.")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
@@ -210,7 +243,16 @@ struct NetworkSettingsTab: View {
             Section("Scheduler") {
                 Toggle("Enable download schedule", isOn: $schedulerEnabled)
                 if schedulerEnabled {
-                    Text("Configure active hours for scheduled downloads.")
+                    Picker("Schedule type", selection: $scheduleType) {
+                        Text("Daily").tag("daily")
+                        Text("Weekdays Only").tag("weekdays")
+                        Text("Custom").tag("custom")
+                    }
+                    DatePicker("Start time", selection: startTime, displayedComponents: .hourAndMinute)
+                    DatePicker("Stop time", selection: stopTime, displayedComponents: .hourAndMinute)
+                    Toggle("Pause downloads outside scheduled hours", isOn: $pauseOutside)
+                    Toggle("Auto-resume when schedule starts", isOn: $autoResume)
+                    Text("Downloads added to scheduled queue will only run during the configured time window. You can assign downloads to the schedule when adding URLs or from the context menu.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -230,9 +272,21 @@ struct BrowserSettingsTab: View {
                 Text("Safari, Chrome, and Firefox extensions enable BDM to capture downloads from your browser.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
-                Button("Install Safari Extension…") {}
-                Button("Install Chrome Extension…") {}
-                Button("Install Firefox Extension…") {}
+                Button("Install Safari Extension…") {
+                    if let url = URL(string: "https://github.com/amirhp-com/BDM-Safari-Extension") {
+                        NSWorkspace.shared.open(url)
+                    }
+                }
+                Button("Install Chrome Extension…") {
+                    if let url = URL(string: "https://github.com/amirhp-com/BDM-Chrome-Extension") {
+                        NSWorkspace.shared.open(url)
+                    }
+                }
+                Button("Install Firefox Extension…") {
+                    if let url = URL(string: "https://github.com/amirhp-com/BDM-Firefox-Extension") {
+                        NSWorkspace.shared.open(url)
+                    }
+                }
             }
             Section("Capture") {
                 Toggle("Capture downloads from browser", isOn: .constant(true))
@@ -273,6 +327,9 @@ struct NotificationsSettingsTab: View {
 // MARK: - Language Tab
 
 struct LanguageSettingsTab: View {
+    @State private var localizer = BDMLocalizer()
+    @AppStorage("bdm.language") private var selectedLocale = "en"
+
     var body: some View {
         Form {
             Section("Language") {
@@ -280,12 +337,19 @@ struct LanguageSettingsTab: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
 
-                Picker("Language", selection: .constant("en")) {
-                    Text("English (100%)").tag("en")
-                    Text("فارسی — Persian (community)").tag("fa")
+                let locales = localizer.availableLocales()
+
+                Picker("Language", selection: $selectedLocale) {
+                    ForEach(locales, id: \.code) { locale in
+                        Text("\(locale.name) (\(Int(locale.completion * 100))%)")
+                            .tag(locale.code)
+                    }
+                }
+                .onChange(of: selectedLocale) { _, newValue in
+                    localizer.load(locale: newValue)
                 }
 
-                Text("Community translations are loaded from\n~/Library/Application Support/BDM/Locales/")
+                Text("Community translations are loaded from\n~/Library/Application Support/BDM/Locales/\nor bundled in the app.")
                     .font(.system(.caption, design: .monospaced))
                     .foregroundStyle(.secondary)
             }

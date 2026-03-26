@@ -9,7 +9,13 @@ struct AddURLsSheet: View {
     @State private var savePath = "~/Downloads/"
     @State private var segmentCount = 16
     @State private var threadsPerSegment = 4
-    @State private var startImmediately = true
+    @State private var startOption: StartOption = .immediately
+
+    private enum StartOption: String, CaseIterable {
+        case immediately = "Immediately"
+        case paused = "Add paused"
+        case scheduled = "Scheduled"
+    }
 
     private var parsedURLs: [URL] {
         urlText
@@ -102,9 +108,10 @@ struct AddURLsSheet: View {
                 }
 
                 optionRow("Start") {
-                    Picker("", selection: $startImmediately) {
-                        Text("Immediately").tag(true)
-                        Text("Add paused").tag(false)
+                    Picker("", selection: $startOption) {
+                        ForEach(StartOption.allCases, id: \.self) { option in
+                            Text(option.rawValue).tag(option)
+                        }
                     }
                     .frame(maxWidth: .infinity)
                 }
@@ -149,8 +156,14 @@ struct AddURLsSheet: View {
                 segmentCount: segmentCount > 0 ? segmentCount : 16,
                 threadsPerSegment: threadsPerSegment > 0 ? threadsPerSegment : 4
             )
-            if startImmediately {
+            switch startOption {
+            case .immediately:
                 item.downloadStatus = .active
+            case .paused:
+                item.downloadStatus = .paused
+            case .scheduled:
+                item.downloadStatus = .queued
+                item.note = "Scheduled — will start during configured schedule window"
             }
             modelContext.insert(item)
         }
