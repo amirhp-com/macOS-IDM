@@ -1,4 +1,38 @@
 import SwiftUI
+import AppKit
+
+// MARK: - Transparent Window Helper
+
+/// Makes the hosting NSWindow transparent so that `.ultraThinMaterial` and `.glassEffect()`
+/// can show the desktop through the window. When glass is disabled, restores opaque background.
+struct TransparentWindowFinder: NSViewRepresentable {
+    var isGlassEnabled: Bool
+
+    func makeNSView(context: Context) -> NSView {
+        let view = NSView()
+        DispatchQueue.main.async {
+            applyWindowTransparency(view: view, glassEnabled: isGlassEnabled)
+        }
+        return view
+    }
+
+    func updateNSView(_ nsView: NSView, context: Context) {
+        DispatchQueue.main.async {
+            applyWindowTransparency(view: nsView, glassEnabled: isGlassEnabled)
+        }
+    }
+
+    private func applyWindowTransparency(view: NSView, glassEnabled: Bool) {
+        guard let window = view.window else { return }
+        if glassEnabled {
+            window.isOpaque = false
+            window.backgroundColor = .clear
+        } else {
+            window.isOpaque = true
+            window.backgroundColor = .windowBackgroundColor
+        }
+    }
+}
 
 // MARK: - Conditional Glass Modifiers
 
