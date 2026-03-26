@@ -9,8 +9,14 @@ struct FilterBar: View {
 
     var body: some View {
         HStack(spacing: 6) {
-            ForEach(StatusFilter.allCases, id: \.self) { filter in
-                filterChip(filter)
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 6) {
+                    ForEach(StatusFilter.allCases, id: \.self) { filter in
+                        filterChip(filter)
+                            .fixedSize()
+                            .lineLimit(1)
+                    }
+                }
             }
 
             Spacer()
@@ -27,7 +33,8 @@ struct FilterBar: View {
                     .font(.caption)
             }
             .menuStyle(.borderlessButton)
-            .frame(width: 60)
+            .fixedSize()
+            .frame(minWidth: 100)
 
             // Search
             TextField("⌘F  Search…", text: $searchText)

@@ -9,10 +9,11 @@ struct ContentView: View {
     @State private var selectedDownload: DownloadItem?
     @State private var showAddURLSheet = false
     @State private var searchText = ""
+    @State private var columnVisibility: NavigationSplitViewVisibility = .all
 
     var body: some View {
         @Bindable var appearance = appearance
-        NavigationSplitView(columnVisibility: .constant(appearance.showSidebar ? .all : .doubleColumn)) {
+        NavigationSplitView(columnVisibility: $columnVisibility) {
             SidebarView(downloads: downloads)
                 .navigationSplitViewColumnWidth(min: 140, ideal: 168, max: 200)
         } content: {
@@ -38,8 +39,22 @@ struct ContentView: View {
                 emptyDetail
             }
         }
+        .onChange(of: appearance.showSidebar) { _, newValue in
+            columnVisibility = newValue ? .all : .doubleColumn
+        }
+        .onChange(of: columnVisibility) { _, newValue in
+            appearance.showSidebar = (newValue != .doubleColumn)
+        }
         .toolbar {
             ToolbarItemGroup(placement: .primaryAction) {
+                Button {
+                    appearance.showSidebar.toggle()
+                } label: {
+                    Label("Toggle Sidebar", systemImage: "sidebar.leading")
+                }
+                .bdmGlassButton()
+                .keyboardShortcut("s", modifiers: [.command, .option])
+
                 ViewModeToggle(viewMode: Bindable(appearance).viewMode)
                 Button {
                     showAddURLSheet = true
@@ -48,8 +63,16 @@ struct ContentView: View {
                 }
                 .bdmGlassButton()
                 .keyboardShortcut("n", modifiers: .command)
+
+                Button {
+                    NSApp.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
+                } label: {
+                    Label("Settings", systemImage: "gearshape")
+                }
+                .bdmGlassButton()
             }
         }
+        .background(TransparentWindowFinder(isGlassEnabled: appearance.glassEnabled))
         .sheet(isPresented: $showAddURLSheet) {
             AddURLsSheet()
         }
