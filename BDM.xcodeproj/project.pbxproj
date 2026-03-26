@@ -1,0 +1,840 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A10001000001000100010001 /* BDMShared in Frameworks */ = {isa = PBXBuildFile; productRef = A10001000001000100010002 /* BDMShared */; };
+		A10001000001000100010003 /* BDMShared in Frameworks */ = {isa = PBXBuildFile; productRef = A10001000001000100010004 /* BDMShared */; };
+		A10001000001000100010005 /* CryptoKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A20001000001000100010001 /* CryptoKit.framework */; };
+		A10001000001000100010006 /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A20001000001000100010002 /* UserNotifications.framework */; };
+		A10001000001000100010007 /* CryptoKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A20001000001000100010001 /* CryptoKit.framework */; };
+		A10001000001000100010008 /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A20001000001000100010002 /* UserNotifications.framework */; };
+		A10001000001000100010009 /* BDMApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10001000001000100010001 /* BDMApp.swift */; };
+		A1000100000100010001000A /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10001000001000100010002 /* ContentView.swift */; };
+		A1000100000100010001000B /* SidebarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10001000001000100010003 /* SidebarView.swift */; };
+		A1000100000100010001000C /* DownloadListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10001000001000100010004 /* DownloadListView.swift */; };
+		A1000100000100010001000D /* DetailPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10001000001000100010005 /* DetailPanelView.swift */; };
+		A1000100000100010001000E /* DetailedRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10001000001000100010006 /* DetailedRowView.swift */; };
+		A1000100000100010001000F /* CompactRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10001000001000100010007 /* CompactRowView.swift */; };
+		A10001000001000100010010 /* MinimalRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10001000001000100010008 /* MinimalRowView.swift */; };
+		A10001000001000100010011 /* AddURLsSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10001000001000100010009 /* AddURLsSheet.swift */; };
+		A10001000001000100010012 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000100000100010001000A /* SettingsView.swift */; };
+		A10001000001000100010013 /* SegmentMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000100000100010001000B /* SegmentMapView.swift */; };
+		A10001000001000100010014 /* FilterBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000100000100010001000C /* FilterBar.swift */; };
+		A10001000001000100010015 /* ViewModeToggle.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000100000100010001000D /* ViewModeToggle.swift */; };
+		A10001000001000100010016 /* AppearanceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000100000100010001000E /* AppearanceManager.swift */; };
+		A10001000001000100010017 /* GlassTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000100000100010001000F /* GlassTheme.swift */; };
+		A10001000001000100010018 /* DownloadItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10001000001000100010010 /* DownloadItem.swift */; };
+		A10001000001000100010019 /* Segment.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10001000001000100010011 /* Segment.swift */; };
+		A1000100000100010001001A /* ThreadRange.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10001000001000100010012 /* ThreadRange.swift */; };
+		A1000100000100010001001B /* RoutingRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10001000001000100010013 /* RoutingRule.swift */; };
+		A1000100000100010001001C /* BDMLocalizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10001000001000100010014 /* BDMLocalizer.swift */; };
+		A1000100000100010001001D /* XPCClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10001000001000100010015 /* XPCClient.swift */; };
+		A1000100000100010001001E /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10001000001000100010016 /* NotificationService.swift */; };
+		A1000100000100010001001F /* en.json in Resources */ = {isa = PBXBuildFile; fileRef = B10001000001000100010017 /* en.json */; };
+		A10001000001000100010020 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10001000001000100010018 /* main.swift */; };
+		A10001000001000100010021 /* DownloaderService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10001000001000100010019 /* DownloaderService.swift */; };
+		A10001000001000100010022 /* DownloadEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000100000100010001001A /* DownloadEngine.swift */; };
+		A10001000001000100010023 /* SegmentPlanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000100000100010001001B /* SegmentPlanner.swift */; };
+		A10001000001000100010024 /* SegmentDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000100000100010001001C /* SegmentDownloader.swift */; };
+		A10001000001000100010025 /* SparseFileWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000100000100010001001D /* SparseFileWriter.swift */; };
+		A10001000001000100010026 /* BandwidthLimiter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000100000100010001001E /* BandwidthLimiter.swift */; };
+		A10001000001000100010027 /* ChecksumVerifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000100000100010001001F /* ChecksumVerifier.swift */; };
+		A10001000001000100010028 /* BDMDownloader.xpc in CopyFiles */ = {isa = PBXBuildFile; fileRef = C20001000001000100010002 /* BDMDownloader.xpc */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		D10001000001000100010001 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E10001000001000100010001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C10001000001000100010002;
+			remoteInfo = BDMDownloader;
+		};
+		D10001000001000100010002 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E10001000001000100010001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C10001000001000100010001;
+			remoteInfo = BDM;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		F10001000001000100010001 /* Embed XPC Services */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/XPCServices";
+			dstSubfolderSpec = 16;
+			files = (
+				A10001000001000100010028 /* BDMDownloader.xpc in CopyFiles */,
+			);
+			name = "Embed XPC Services";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		A20001000001000100010001 /* CryptoKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CryptoKit.framework; path = System/Library/Frameworks/CryptoKit.framework; sourceTree = SDKROOT; };
+		A20001000001000100010002 /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
+		B10001000001000100010001 /* BDMApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BDMApp.swift; sourceTree = "<group>"; };
+		B10001000001000100010002 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		B10001000001000100010003 /* SidebarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarView.swift; sourceTree = "<group>"; };
+		B10001000001000100010004 /* DownloadListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadListView.swift; sourceTree = "<group>"; };
+		B10001000001000100010005 /* DetailPanelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailPanelView.swift; sourceTree = "<group>"; };
+		B10001000001000100010006 /* DetailedRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailedRowView.swift; sourceTree = "<group>"; };
+		B10001000001000100010007 /* CompactRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompactRowView.swift; sourceTree = "<group>"; };
+		B10001000001000100010008 /* MinimalRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MinimalRowView.swift; sourceTree = "<group>"; };
+		B10001000001000100010009 /* AddURLsSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddURLsSheet.swift; sourceTree = "<group>"; };
+		B1000100000100010001000A /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		B1000100000100010001000B /* SegmentMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentMapView.swift; sourceTree = "<group>"; };
+		B1000100000100010001000C /* FilterBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterBar.swift; sourceTree = "<group>"; };
+		B1000100000100010001000D /* ViewModeToggle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModeToggle.swift; sourceTree = "<group>"; };
+		B1000100000100010001000E /* AppearanceManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppearanceManager.swift; sourceTree = "<group>"; };
+		B1000100000100010001000F /* GlassTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassTheme.swift; sourceTree = "<group>"; };
+		B10001000001000100010010 /* DownloadItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadItem.swift; sourceTree = "<group>"; };
+		B10001000001000100010011 /* Segment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Segment.swift; sourceTree = "<group>"; };
+		B10001000001000100010012 /* ThreadRange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadRange.swift; sourceTree = "<group>"; };
+		B10001000001000100010013 /* RoutingRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoutingRule.swift; sourceTree = "<group>"; };
+		B10001000001000100010014 /* BDMLocalizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BDMLocalizer.swift; sourceTree = "<group>"; };
+		B10001000001000100010015 /* XPCClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XPCClient.swift; sourceTree = "<group>"; };
+		B10001000001000100010016 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
+		B10001000001000100010017 /* en.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = en.json; sourceTree = "<group>"; };
+		B10001000001000100010018 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		B10001000001000100010019 /* DownloaderService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloaderService.swift; sourceTree = "<group>"; };
+		B1000100000100010001001A /* DownloadEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadEngine.swift; sourceTree = "<group>"; };
+		B1000100000100010001001B /* SegmentPlanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentPlanner.swift; sourceTree = "<group>"; };
+		B1000100000100010001001C /* SegmentDownloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentDownloader.swift; sourceTree = "<group>"; };
+		B1000100000100010001001D /* SparseFileWriter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SparseFileWriter.swift; sourceTree = "<group>"; };
+		B1000100000100010001001E /* BandwidthLimiter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BandwidthLimiter.swift; sourceTree = "<group>"; };
+		B1000100000100010001001F /* ChecksumVerifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChecksumVerifier.swift; sourceTree = "<group>"; };
+		B10001000001000100010020 /* BDM.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BDM.entitlements; sourceTree = "<group>"; };
+		B10001000001000100010021 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B10001000001000100010022 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B10001000001000100010023 /* BDMDownloader.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BDMDownloader.entitlements; sourceTree = "<group>"; };
+		C20001000001000100010001 /* BDM.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BDM.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C20001000001000100010002 /* BDMDownloader.xpc */ = {isa = PBXFileReference; explicitFileType = "wrapper.xpc-service"; includeInIndex = 0; path = BDMDownloader.xpc; sourceTree = BUILT_PRODUCTS_DIR; };
+		C20001000001000100010003 /* BDMTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BDMTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		C20001000001000100010004 /* BDMShared */ = {isa = PBXFileReference; lastKnownFileType = folder; path = BDMShared; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		F20001000001000100010001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A10001000001000100010001 /* BDMShared in Frameworks */,
+				A10001000001000100010005 /* CryptoKit.framework in Frameworks */,
+				A10001000001000100010006 /* UserNotifications.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F20001000001000100010002 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A10001000001000100010003 /* BDMShared in Frameworks */,
+				A10001000001000100010007 /* CryptoKit.framework in Frameworks */,
+				A10001000001000100010008 /* UserNotifications.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F20001000001000100010003 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		E20001000001000100010001 /* mainGroup */ = {
+			isa = PBXGroup;
+			children = (
+				E20001000001000100010002 /* BDM */,
+				E20001000001000100010010 /* BDMDownloader */,
+				C20001000001000100010004 /* BDMShared */,
+				E20001000001000100010020 /* BDMTests */,
+				E20001000001000100010030 /* Frameworks */,
+				E20001000001000100010040 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		E20001000001000100010040 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				C20001000001000100010001 /* BDM.app */,
+				C20001000001000100010002 /* BDMDownloader.xpc */,
+				C20001000001000100010003 /* BDMTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		E20001000001000100010002 /* BDM */ = {
+			isa = PBXGroup;
+			children = (
+				E20001000001000100010003 /* App */,
+				E20001000001000100010004 /* UI */,
+				E2000100000100010001000A /* Theme */,
+				E2000100000100010001000B /* Models */,
+				E2000100000100010001000C /* Localization */,
+				E2000100000100010001000D /* Services */,
+				E2000100000100010001000E /* Resources */,
+			);
+			path = BDM;
+			sourceTree = "<group>";
+		};
+		E20001000001000100010003 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				B10001000001000100010001 /* BDMApp.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		E20001000001000100010004 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				E20001000001000100010005 /* MainWindow */,
+				E20001000001000100010006 /* ViewModes */,
+				E20001000001000100010007 /* AddURLs */,
+				E20001000001000100010008 /* Settings */,
+				E20001000001000100010009 /* Components */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
+		E20001000001000100010005 /* MainWindow */ = {
+			isa = PBXGroup;
+			children = (
+				B10001000001000100010002 /* ContentView.swift */,
+				B10001000001000100010003 /* SidebarView.swift */,
+				B10001000001000100010004 /* DownloadListView.swift */,
+				B10001000001000100010005 /* DetailPanelView.swift */,
+			);
+			path = MainWindow;
+			sourceTree = "<group>";
+		};
+		E20001000001000100010006 /* ViewModes */ = {
+			isa = PBXGroup;
+			children = (
+				B10001000001000100010006 /* DetailedRowView.swift */,
+				B10001000001000100010007 /* CompactRowView.swift */,
+				B10001000001000100010008 /* MinimalRowView.swift */,
+			);
+			path = ViewModes;
+			sourceTree = "<group>";
+		};
+		E20001000001000100010007 /* AddURLs */ = {
+			isa = PBXGroup;
+			children = (
+				B10001000001000100010009 /* AddURLsSheet.swift */,
+			);
+			path = AddURLs;
+			sourceTree = "<group>";
+		};
+		E20001000001000100010008 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				B1000100000100010001000A /* SettingsView.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		E20001000001000100010009 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				B1000100000100010001000B /* SegmentMapView.swift */,
+				B1000100000100010001000C /* FilterBar.swift */,
+				B1000100000100010001000D /* ViewModeToggle.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		E2000100000100010001000A /* Theme */ = {
+			isa = PBXGroup;
+			children = (
+				B1000100000100010001000E /* AppearanceManager.swift */,
+				B1000100000100010001000F /* GlassTheme.swift */,
+			);
+			path = Theme;
+			sourceTree = "<group>";
+		};
+		E2000100000100010001000B /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				B10001000001000100010010 /* DownloadItem.swift */,
+				B10001000001000100010011 /* Segment.swift */,
+				B10001000001000100010012 /* ThreadRange.swift */,
+				B10001000001000100010013 /* RoutingRule.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		E2000100000100010001000C /* Localization */ = {
+			isa = PBXGroup;
+			children = (
+				B10001000001000100010014 /* BDMLocalizer.swift */,
+				E2000100000100010001000F /* Resources */,
+			);
+			path = Localization;
+			sourceTree = "<group>";
+		};
+		E2000100000100010001000F /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				B10001000001000100010017 /* en.json */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		E2000100000100010001000D /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				B10001000001000100010015 /* XPCClient.swift */,
+				B10001000001000100010016 /* NotificationService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		E2000100000100010001000E /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				B10001000001000100010020 /* BDM.entitlements */,
+				B10001000001000100010021 /* Info.plist */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		E20001000001000100010010 /* BDMDownloader */ = {
+			isa = PBXGroup;
+			children = (
+				B10001000001000100010018 /* main.swift */,
+				B10001000001000100010019 /* DownloaderService.swift */,
+				E20001000001000100010011 /* Engine */,
+				B10001000001000100010022 /* Info.plist */,
+				B10001000001000100010023 /* BDMDownloader.entitlements */,
+			);
+			path = BDMDownloader;
+			sourceTree = "<group>";
+		};
+		E20001000001000100010011 /* Engine */ = {
+			isa = PBXGroup;
+			children = (
+				B1000100000100010001001A /* DownloadEngine.swift */,
+				B1000100000100010001001B /* SegmentPlanner.swift */,
+				B1000100000100010001001C /* SegmentDownloader.swift */,
+				B1000100000100010001001D /* SparseFileWriter.swift */,
+				B1000100000100010001001E /* BandwidthLimiter.swift */,
+				B1000100000100010001001F /* ChecksumVerifier.swift */,
+			);
+			path = Engine;
+			sourceTree = "<group>";
+		};
+		E20001000001000100010020 /* BDMTests */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = BDMTests;
+			sourceTree = "<group>";
+		};
+		E20001000001000100010030 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				A20001000001000100010001 /* CryptoKit.framework */,
+				A20001000001000100010002 /* UserNotifications.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		C10001000001000100010001 /* BDM */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C30001000001000100010001 /* Build configuration list for PBXNativeTarget "BDM" */;
+			buildPhases = (
+				F30001000001000100010001 /* Sources */,
+				F20001000001000100010001 /* Frameworks */,
+				F40001000001000100010001 /* Resources */,
+				F10001000001000100010001 /* Embed XPC Services */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D20001000001000100010001 /* PBXTargetDependency */,
+			);
+			name = BDM;
+			packageProductDependencies = (
+				A10001000001000100010002 /* BDMShared */,
+			);
+			productName = BDM;
+			productReference = C20001000001000100010001 /* BDM.app */;
+			productType = "com.apple.product-type.application";
+		};
+		C10001000001000100010002 /* BDMDownloader */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C30001000001000100010002 /* Build configuration list for PBXNativeTarget "BDMDownloader" */;
+			buildPhases = (
+				F30001000001000100010002 /* Sources */,
+				F20001000001000100010002 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = BDMDownloader;
+			packageProductDependencies = (
+				A10001000001000100010004 /* BDMShared */,
+			);
+			productName = BDMDownloader;
+			productReference = C20001000001000100010002 /* BDMDownloader.xpc */;
+			productType = "com.apple.product-type.xpc-service";
+		};
+		C10001000001000100010003 /* BDMTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C30001000001000100010003 /* Build configuration list for PBXNativeTarget "BDMTests" */;
+			buildPhases = (
+				F30001000001000100010003 /* Sources */,
+				F20001000001000100010003 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D20001000001000100010002 /* PBXTargetDependency */,
+			);
+			name = BDMTests;
+			productName = BDMTests;
+			productReference = C20001000001000100010003 /* BDMTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		E10001000001000100010001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1600;
+				LastUpgradeCheck = 1600;
+				TargetAttributes = {
+					C10001000001000100010001 = {
+						CreatedOnToolsVersion = 16.0;
+					};
+					C10001000001000100010002 = {
+						CreatedOnToolsVersion = 16.0;
+					};
+					C10001000001000100010003 = {
+						CreatedOnToolsVersion = 16.0;
+						TestTargetID = C10001000001000100010001;
+					};
+				};
+			};
+			buildConfigurationList = C30001000001000100010004 /* Build configuration list for PBXProject "BDM" */;
+			compatibilityVersion = "Xcode 16.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = E20001000001000100010001 /* mainGroup */;
+			packageReferences = (
+				E30001000001000100010001 /* XCLocalSwiftPackageReference "BDMShared" */,
+			);
+			productRefGroup = E20001000001000100010040 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				C10001000001000100010001 /* BDM */,
+				C10001000001000100010002 /* BDMDownloader */,
+				C10001000001000100010003 /* BDMTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		F40001000001000100010001 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A1000100000100010001001F /* en.json in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		F30001000001000100010001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A10001000001000100010009 /* BDMApp.swift in Sources */,
+				A1000100000100010001000A /* ContentView.swift in Sources */,
+				A1000100000100010001000B /* SidebarView.swift in Sources */,
+				A1000100000100010001000C /* DownloadListView.swift in Sources */,
+				A1000100000100010001000D /* DetailPanelView.swift in Sources */,
+				A1000100000100010001000E /* DetailedRowView.swift in Sources */,
+				A1000100000100010001000F /* CompactRowView.swift in Sources */,
+				A10001000001000100010010 /* MinimalRowView.swift in Sources */,
+				A10001000001000100010011 /* AddURLsSheet.swift in Sources */,
+				A10001000001000100010012 /* SettingsView.swift in Sources */,
+				A10001000001000100010013 /* SegmentMapView.swift in Sources */,
+				A10001000001000100010014 /* FilterBar.swift in Sources */,
+				A10001000001000100010015 /* ViewModeToggle.swift in Sources */,
+				A10001000001000100010016 /* AppearanceManager.swift in Sources */,
+				A10001000001000100010017 /* GlassTheme.swift in Sources */,
+				A10001000001000100010018 /* DownloadItem.swift in Sources */,
+				A10001000001000100010019 /* Segment.swift in Sources */,
+				A1000100000100010001001A /* ThreadRange.swift in Sources */,
+				A1000100000100010001001B /* RoutingRule.swift in Sources */,
+				A1000100000100010001001C /* BDMLocalizer.swift in Sources */,
+				A1000100000100010001001D /* XPCClient.swift in Sources */,
+				A1000100000100010001001E /* NotificationService.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F30001000001000100010002 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A10001000001000100010020 /* main.swift in Sources */,
+				A10001000001000100010021 /* DownloaderService.swift in Sources */,
+				A10001000001000100010022 /* DownloadEngine.swift in Sources */,
+				A10001000001000100010023 /* SegmentPlanner.swift in Sources */,
+				A10001000001000100010024 /* SegmentDownloader.swift in Sources */,
+				A10001000001000100010025 /* SparseFileWriter.swift in Sources */,
+				A10001000001000100010026 /* BandwidthLimiter.swift in Sources */,
+				A10001000001000100010027 /* ChecksumVerifier.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F30001000001000100010003 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		D20001000001000100010001 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C10001000001000100010002 /* BDMDownloader */;
+			targetProxy = D10001000001000100010001 /* PBXContainerItemProxy */;
+		};
+		D20001000001000100010002 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C10001000001000100010001 /* BDM */;
+			targetProxy = D10001000001000100010002 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		C40001000001000100010001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+			};
+			name = Debug;
+		};
+		C40001000001000100010002 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 26.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+			};
+			name = Release;
+		};
+		C40001000001000100010003 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = BDM/Resources/BDM.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = BDM/Resources/Info.plist;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSMainStoryboardFile = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.amirhpcom.bdm;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+			};
+			name = Debug;
+		};
+		C40001000001000100010004 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = BDM/Resources/BDM.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = BDM/Resources/Info.plist;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSMainStoryboardFile = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.amirhpcom.bdm;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+			};
+			name = Release;
+		};
+		C40001000001000100010005 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = BDMDownloader/BDMDownloader.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = BDMDownloader/Info.plist;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.amirhpcom.bdm.downloader;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+			};
+			name = Debug;
+		};
+		C40001000001000100010006 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = BDMDownloader/BDMDownloader.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = BDMDownloader/Info.plist;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.amirhpcom.bdm.downloader;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+			};
+			name = Release;
+		};
+		C40001000001000100010007 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.amirhpcom.bdm.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BDM.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/BDM";
+			};
+			name = Debug;
+		};
+		C40001000001000100010008 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.amirhpcom.bdm.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BDM.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/BDM";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		C30001000001000100010001 /* Build configuration list for PBXNativeTarget "BDM" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C40001000001000100010003 /* Debug */,
+				C40001000001000100010004 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C30001000001000100010002 /* Build configuration list for PBXNativeTarget "BDMDownloader" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C40001000001000100010005 /* Debug */,
+				C40001000001000100010006 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C30001000001000100010003 /* Build configuration list for PBXNativeTarget "BDMTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C40001000001000100010007 /* Debug */,
+				C40001000001000100010008 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C30001000001000100010004 /* Build configuration list for PBXProject "BDM" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C40001000001000100010001 /* Debug */,
+				C40001000001000100010002 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		E30001000001000100010001 /* XCLocalSwiftPackageReference "BDMShared" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = BDMShared;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		A10001000001000100010002 /* BDMShared */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = BDMShared;
+		};
+		A10001000001000100010004 /* BDMShared */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = BDMShared;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = E10001000001000100010001 /* Project object */;
+}

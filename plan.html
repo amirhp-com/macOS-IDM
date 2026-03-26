@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BlackSwan Download Manager (BDM) — Product Plan</title>
+  <style>
+    :root {
+      --bg: #0d0d0f;
+      --surface: #16161a;
+      --surface2: #1e1e24;
+      --surface3: #222229;
+      --border: #2a2a35;
+      --border2: #333340;
+      --accent: #5b8dee;
+      --accent2: #7c6af7;
+      --green: #3ecf8e;
+      --yellow: #f5a623;
+      --red: #e5534b;
+      --orange: #e89b3e;
+      --text: #e4e4f0;
+      --muted: #7b7b96;
+      --muted2: #55556a;
+      --tag-bg: #1e2a3a;
+      --tag-text: #7ab3f5;
+      --swan: #1a1a2e;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg); color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+      font-size: 15px; line-height: 1.65; padding: 48px 24px 80px;
+    }
+    .container { max-width: 980px; margin: 0 auto; }
+    header { margin-bottom: 56px; }
+    .eyebrow { font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); margin-bottom: 12px; }
+    h1 { font-size: 42px; font-weight: 700; letter-spacing: -.03em; line-height: 1.1;
+      background: linear-gradient(135deg, #e4e4f0 20%, var(--accent2) 60%, var(--accent));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .app-names { margin-top: 14px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+    .app-name-tag { font-size: 12px; padding: 4px 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); }
+    .app-name-tag span { color: var(--accent); font-weight: 600; }
+    .app-name-tag code { font-family: "SF Mono", monospace; font-size: 11px; color: var(--tag-text); background: var(--surface2); padding: 1px 5px; border-radius: 4px; }
+    .subtitle { margin-top: 14px; color: var(--muted); font-size: 16px; max-width: 660px; }
+    .version-pill { display: inline-flex; align-items: center; gap: 6px; margin-top: 18px; padding: 4px 12px; border-radius: 20px; background: var(--surface); border: 1px solid var(--border); font-size: 12px; color: var(--muted); }
+    .version-pill b { color: var(--green); }
+
+    section { margin-bottom: 56px; }
+    h2 { font-size: 12px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+
+    .compare-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 10px; }
+    .compare-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
+    .compare-card h3 { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+    .compare-card .platform { font-size: 11px; color: var(--muted); margin-bottom: 10px; }
+    .pro-con { font-size: 12px; line-height: 1.9; }
+    .pro::before { content: "✓ "; color: var(--green); }
+    .con::before { content: "✗ "; color: var(--red); }
+    .neutral::before { content: "· "; color: var(--muted); }
+
+    .principle-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
+    .principle { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px 18px; }
+    .principle-icon { font-size: 20px; margin-bottom: 6px; }
+    .principle h3 { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+    .principle p { font-size: 12px; color: var(--muted); }
+
+    /* Feature table */
+    .feature-table { width: 100%; border-collapse: collapse; }
+    .feature-table th { text-align: left; font-size: 11px; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; color: var(--muted); padding: 8px 10px; border-bottom: 1px solid var(--border); }
+    .feature-table td { padding: 9px 10px; font-size: 13px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    .feature-table tr:last-child td { border-bottom: none; }
+    .feature-table tr:hover td { background: var(--surface2); }
+    .feature-table .group-row td { color: var(--muted); font-size: 11px; padding: 14px 10px 4px; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; background: transparent !important; }
+    .badge { display: inline-block; font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 20px; letter-spacing: .04em; white-space: nowrap; }
+    .badge-must { background: #1a2e1a; color: var(--green); }
+    .badge-nice { background: #2a2a14; color: var(--yellow); }
+    .badge-v1 { background: var(--tag-bg); color: var(--tag-text); }
+    .badge-v2 { background: #1e1e2a; color: var(--accent2); }
+
+    /* UI Mock common */
+    .ui-mock { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; font-size: 12px; }
+    .ui-titlebar { background: #18181e; border-bottom: 1px solid var(--border); padding: 11px 14px; display: flex; align-items: center; gap: 7px; }
+    .tl { width: 11px; height: 11px; border-radius: 50%; }
+    .tl-r { background: #ff5f57; } .tl-y { background: #ffbd2e; } .tl-g { background: #28c840; }
+    .collapse-btn { width: 20px; height: 20px; border-radius: 5px; background: var(--surface2); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 9px; color: var(--muted); cursor: pointer; margin-left: 6px; }
+    .ui-titlebar-center { flex: 1; text-align: center; font-size: 12px; font-weight: 500; color: var(--muted); }
+    .ui-titlebar-right { display: flex; gap: 6px; align-items: center; }
+    .tbar-btn { font-size: 11px; padding: 3px 10px; border-radius: 6px; border: 1px solid var(--border); background: var(--surface2); color: var(--text); cursor: pointer; }
+    .tbar-btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .view-toggle { display: flex; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+    .view-toggle-btn { padding: 3px 8px; font-size: 10px; background: var(--surface2); color: var(--muted); cursor: pointer; border: none; border-right: 1px solid var(--border); }
+    .view-toggle-btn:last-child { border-right: none; }
+    .view-toggle-btn.active { background: var(--accent); color: #fff; }
+    .ui-body { display: flex; height: 460px; }
+
+    /* Sidebar */
+    .ui-sidebar { width: 168px; background: #111116; border-right: 1px solid var(--border); padding: 10px 6px; flex-shrink: 0; overflow-y: auto; }
+    .sidebar-section-label { font-size: 9.5px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--muted2); padding: 8px 10px 4px; white-space: nowrap; }
+    .nav-item { padding: 6px 10px; border-radius: 7px; color: var(--muted); cursor: pointer; display: flex; align-items: center; gap: 7px; white-space: nowrap; overflow: hidden; font-size: 12px; }
+    .nav-item.active { background: var(--surface2); color: var(--text); }
+    .nav-item:hover:not(.active) { background: #1a1a22; }
+    .nav-icon { flex-shrink: 0; width: 14px; text-align: center; }
+    .nav-badge { margin-left: auto; font-size: 10px; background: var(--accent); color: #fff; border-radius: 9px; padding: 1px 5px; flex-shrink: 0; }
+    .nav-divider { height: 1px; background: var(--border); margin: 8px 6px; }
+
+    /* Filter bar */
+    .ui-filter-bar { padding: 8px 12px; border-bottom: 1px solid var(--border); display: flex; gap: 6px; align-items: center; background: var(--surface); flex-wrap: wrap; }
+    .filter-chip { font-size: 11px; padding: 3px 10px; border-radius: 20px; border: 1px solid var(--border); color: var(--muted); cursor: pointer; white-space: nowrap; }
+    .filter-chip.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .filter-search { margin-left: auto; font-size: 11px; padding: 4px 10px; border-radius: 7px; border: 1px solid var(--border); background: var(--bg); color: var(--muted); width: 150px; }
+    .sort-btn { font-size: 11px; padding: 3px 8px; border-radius: 6px; border: 1px solid var(--border); background: transparent; color: var(--muted); cursor: pointer; }
+    .ui-main { flex: 1; overflow-y: auto; display: flex; flex-direction: column; min-width: 0; }
+
+    /* Download rows - Detailed view */
+    .dl-row { padding: 10px 12px; border-bottom: 1px solid var(--border); display: flex; align-items: flex-start; gap: 10px; cursor: pointer; }
+    .dl-row:hover { background: var(--surface2); }
+    .dl-row.selected { background: #1a2240; border-left: 2px solid var(--accent); padding-left: 10px; }
+    .file-icon { font-size: 22px; flex-shrink: 0; padding-top: 1px; }
+    .dl-meta { flex: 1; min-width: 0; }
+    .dl-name { font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .dl-sub { font-size: 11px; color: var(--muted); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .dl-path { font-size: 10px; color: var(--muted2); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-family: "SF Mono", monospace; }
+    .progress-wrap { margin-top: 6px; background: var(--border); border-radius: 4px; height: 3px; overflow: hidden; }
+    .progress-bar { height: 100%; border-radius: 4px; background: var(--accent); }
+    .progress-bar.green { background: var(--green); }
+    .progress-bar.yellow { background: var(--yellow); }
+    .progress-bar.red { background: var(--red); }
+    .segment-vis { margin-top: 5px; display: flex; gap: 1px; height: 3px; border-radius: 2px; overflow: hidden; }
+    .seg { flex: 1; border-radius: 1px; background: var(--border); }
+    .seg.done { background: var(--green); }
+    .seg.active { background: var(--accent); }
+    .seg.partial { background: #2a4080; }
+    .dl-right { flex-shrink: 0; text-align: right; }
+    .dl-speed { font-size: 11px; color: var(--accent); white-space: nowrap; }
+    .dl-speed.green { color: var(--green); } .dl-speed.yellow { color: var(--yellow); } .dl-speed.red { color: var(--red); }
+    .dl-size { font-size: 10px; color: var(--muted2); margin-top: 2px; }
+    .status-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+    .dot-active { background: var(--accent); box-shadow: 0 0 5px var(--accent); }
+    .dot-done { background: var(--green); } .dot-paused { background: var(--yellow); }
+    .dot-err { background: var(--red); } .dot-queue { background: var(--muted2); }
+
+    /* Compact row */
+    .dl-compact { padding: 6px 12px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; cursor: pointer; }
+    .dl-compact:hover { background: var(--surface2); }
+    .dl-compact .dl-name { font-size: 12px; flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .dl-compact .compact-progress { width: 120px; flex-shrink: 0; }
+    .dl-compact .compact-pct { font-size: 11px; font-weight: 600; width: 40px; text-align: right; flex-shrink: 0; }
+
+    /* Minimal row */
+    .dl-minimal { padding: 4px 12px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 12px; }
+    .dl-minimal:hover { background: var(--surface2); }
+    .dl-minimal .dl-name { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 12px; }
+    .dl-minimal .mini-bar { width: 80px; flex-shrink: 0; }
+    .dl-minimal .mini-pct { font-size: 10px; font-weight: 600; width: 34px; text-align: right; flex-shrink: 0; color: var(--muted); }
+
+    /* Detail panel */
+    .ui-detail { width: 224px; border-left: 1px solid var(--border); background: #111116; padding: 14px; flex-shrink: 0; overflow-y: auto; }
+    .detail-title { font-size: 12px; font-weight: 600; margin-bottom: 12px; color: var(--text); }
+    .detail-row { margin-bottom: 10px; }
+    .detail-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 2px; }
+    .detail-value { font-size: 12px; color: var(--text); word-break: break-all; }
+    .detail-value.mono { font-family: "SF Mono", monospace; font-size: 10px; color: var(--muted); }
+    .detail-actions { display: flex; flex-direction: column; gap: 4px; margin-top: 12px; }
+    .detail-btn { font-size: 11px; padding: 5px 10px; border-radius: 7px; border: 1px solid var(--border); background: var(--surface2); color: var(--text); cursor: pointer; text-align: left; }
+    .detail-btn:hover { background: var(--surface3); }
+    .seg-map { display: grid; grid-template-columns: repeat(16, 1fr); gap: 2px; margin-top: 8px; }
+    .seg-block { height: 8px; border-radius: 2px; background: var(--border); }
+    .seg-block.done { background: var(--green); }
+    .seg-block.active { background: var(--accent); }
+    .seg-block.merging { background: var(--orange); }
+    .thread-row { display: flex; gap: 1px; margin-top: 3px; }
+    .thread-pip { width: 4px; height: 4px; border-radius: 50%; }
+    .thread-pip.hot { background: var(--accent); }
+    .thread-pip.idle { background: var(--border); }
+    .checksum-input { flex: 1; font-size: 10px; font-family: "SF Mono", monospace; background: var(--bg); border: 1px solid var(--border); border-radius: 5px; padding: 4px 6px; color: var(--muted); width: 100%; margin-top: 4px; }
+
+    /* Modal */
+    .modal { background: #1a1a22; border: 1px solid var(--border2); border-radius: 14px; padding: 20px; width: 480px; box-shadow: 0 24px 60px rgba(0,0,0,.6); }
+    .modal-title { font-size: 14px; font-weight: 600; margin-bottom: 14px; }
+    .modal-textarea { width: 100%; height: 90px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 10px; font-size: 12px; color: var(--muted); font-family: "SF Mono", monospace; resize: none; margin-bottom: 12px; }
+    .modal-row { display: flex; gap: 8px; align-items: center; margin-bottom: 10px; }
+    .modal-label { font-size: 11px; color: var(--muted); width: 90px; flex-shrink: 0; }
+    .modal-input { flex: 1; font-size: 12px; background: var(--bg); border: 1px solid var(--border); border-radius: 7px; padding: 5px 10px; color: var(--text); }
+    .modal-select { flex: 1; font-size: 12px; background: var(--bg); border: 1px solid var(--border); border-radius: 7px; padding: 5px 10px; color: var(--text); appearance: none; }
+    .modal-hint { font-size: 10px; color: var(--muted2); margin-top: -6px; margin-bottom: 10px; padding-left: 98px; }
+    .modal-footer { display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px; }
+    .modal-btn { font-size: 12px; padding: 6px 16px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface2); color: var(--text); cursor: pointer; }
+    .modal-btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .url-count-badge { font-size: 10px; background: var(--accent); color: #fff; border-radius: 9px; padding: 1px 7px; margin-left: 6px; }
+    .parsed-list { background: var(--bg); border: 1px solid var(--border); border-radius: 7px; padding: 8px 10px; margin-bottom: 10px; }
+    .parsed-item { font-size: 11px; font-family: "SF Mono", monospace; color: var(--muted); padding: 2px 0; display: flex; gap: 6px; align-items: center; }
+    .parsed-icon { font-size: 12px; }
+    .parsed-url { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
+
+    /* Settings */
+    .settings-mock { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+    .settings-tabs { display: flex; border-bottom: 1px solid var(--border); background: #131318; flex-wrap: wrap; }
+    .stab { padding: 10px 14px; font-size: 11px; color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; }
+    .stab.active { color: var(--text); border-bottom-color: var(--accent); }
+    .settings-body { padding: 18px; }
+    .settings-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .setting-group-title { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .07em; margin-bottom: 10px; }
+    .setting-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); gap: 12px; }
+    .setting-row:last-child { border-bottom: none; }
+    .setting-name { font-size: 12px; }
+    .setting-desc { font-size: 10px; color: var(--muted); margin-top: 1px; }
+    .toggle { width: 32px; height: 18px; background: var(--green); border-radius: 10px; position: relative; flex-shrink: 0; }
+    .toggle::after { content: ""; position: absolute; width: 14px; height: 14px; background: #fff; border-radius: 50%; top: 2px; right: 2px; }
+    .toggle.off { background: var(--border2); }
+    .toggle.off::after { right: auto; left: 2px; }
+    .mini-select { font-size: 11px; background: var(--bg); border: 1px solid var(--border); border-radius: 5px; padding: 3px 8px; color: var(--text); }
+    .mini-input { font-size: 11px; background: var(--bg); border: 1px solid var(--border); border-radius: 5px; padding: 3px 8px; color: var(--text); width: 70px; text-align: center; }
+    .rules-table { width: 100%; font-size: 12px; }
+    .rules-table th { text-align: left; font-size: 10px; color: var(--muted); padding: 4px 6px; border-bottom: 1px solid var(--border); text-transform: uppercase; letter-spacing: .06em; }
+    .rules-table td { padding: 7px 6px; border-bottom: 1px solid var(--border); }
+    .rules-table tr:last-child td { border-bottom: none; }
+    .ext-chip { display: inline-block; font-size: 10px; font-family: "SF Mono", monospace; background: var(--tag-bg); color: var(--tag-text); border-radius: 4px; padding: 1px 5px; margin-right: 2px; }
+    .path-mono { font-size: 10px; font-family: "SF Mono", monospace; color: var(--muted); }
+    .add-rule-row { padding: 8px 6px; font-size: 11px; color: var(--accent); cursor: pointer; }
+    .settings-footer { display: flex; justify-content: space-between; align-items: center; padding: 12px 18px; border-top: 1px solid var(--border); background: #131318; }
+
+    /* Callout */
+    .callout { background: var(--surface); border-left: 3px solid var(--accent); border-radius: 0 10px 10px 0; padding: 12px 16px; font-size: 13px; color: var(--muted); margin-bottom: 12px; }
+    .callout strong { color: var(--text); }
+    .callout code { font-family: "SF Mono", monospace; font-size: 11px; background: var(--surface2); padding: 1px 5px; border-radius: 4px; color: var(--tag-text); }
+
+    /* Engine diagram */
+    .engine-diagram { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 16px; }
+    .engine-title { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 12px; }
+    .engine-flow { display: flex; align-items: flex-start; gap: 8px; flex-wrap: wrap; }
+    .engine-box { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; text-align: center; min-width: 100px; }
+    .engine-box .box-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+    .engine-box .box-value { font-size: 12px; font-weight: 600; margin-top: 3px; }
+    .engine-box .box-desc { font-size: 10px; color: var(--muted2); margin-top: 3px; }
+    .engine-arrow { color: var(--muted2); font-size: 16px; padding-top: 12px; }
+    .engine-sub { display: flex; flex-direction: column; gap: 4px; }
+    .engine-sub-box { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 5px 10px; font-size: 11px; }
+    .engine-sub-box .thread-label { font-size: 9px; color: var(--muted); }
+
+    /* Timeline */
+    .timeline { position: relative; padding-left: 28px; }
+    .timeline::before { content: ""; position: absolute; left: 7px; top: 6px; bottom: 6px; width: 2px; background: var(--border); }
+    .phase { position: relative; margin-bottom: 34px; }
+    .phase-dot { position: absolute; left: -28px; top: 4px; width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--border); background: var(--bg); }
+    .phase-dot.active { border-color: var(--accent); background: #1a2040; }
+    .phase-dot.pending { border-color: var(--border2); }
+    .phase-label { font-size: 10px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: 5px; }
+    .phase h3 { font-size: 15px; font-weight: 600; margin-bottom: 7px; }
+    .phase p { font-size: 13px; color: var(--muted); margin-bottom: 8px; }
+    .task-list { list-style: none; }
+    .task-list li { font-size: 12px; color: var(--muted); padding: 3px 0; display: flex; gap: 8px; align-items: flex-start; line-height: 1.5; }
+    .task-list li::before { content: "—"; color: var(--border2); flex-shrink: 0; }
+    .task-list li code { font-family: "SF Mono", monospace; font-size: 10px; background: var(--surface2); padding: 1px 5px; border-radius: 4px; color: var(--tag-text); }
+
+    /* Tech stack */
+    .stack-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px; }
+    .stack-item { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; }
+    .stack-layer { font-size: 9.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 3px; }
+    .stack-name { font-size: 13px; font-weight: 600; }
+    .stack-why { font-size: 11px; color: var(--muted); margin-top: 3px; }
+
+    .anti-list { display: flex; flex-wrap: wrap; gap: 7px; }
+    .anti-tag { background: #2a1414; color: #e5534b; border: 1px solid #3a1a1a; border-radius: 20px; font-size: 11px; padding: 3px 11px; }
+    .anti-tag::before { content: "✗ "; }
+
+    .kbd-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 6px; }
+    .kbd-row { display: flex; align-items: center; justify-content: space-between; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; }
+    .kbd-action { font-size: 12px; }
+    .kbd-keys { display: flex; gap: 3px; }
+    kbd { font-size: 10px; font-family: -apple-system, sans-serif; background: var(--surface2); border: 1px solid var(--border2); border-radius: 4px; padding: 2px 6px; color: var(--text); }
+
+    .nf-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 10px; }
+    .nf-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px 18px; }
+    .nf-badge { font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 12px; background: var(--tag-bg); color: var(--tag-text); display: inline-block; margin-bottom: 8px; }
+    .nf-card h3 { font-size: 13px; font-weight: 600; margin-bottom: 5px; }
+    .nf-card p { font-size: 12px; color: var(--muted); }
+    .nf-card code { font-family: "SF Mono", monospace; font-size: 10px; background: var(--surface2); padding: 1px 5px; border-radius: 4px; color: var(--tag-text); }
+
+    /* i18n JSON mock */
+    .json-mock { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; font-family: "SF Mono", monospace; font-size: 11px; color: var(--muted); line-height: 1.9; overflow-x: auto; white-space: pre; }
+    .json-key { color: var(--tag-text); }
+    .json-str { color: var(--green); }
+    .json-comment { color: var(--muted2); font-style: italic; }
+
+    /* Notification mock */
+    .notif-mock { display: flex; gap: 12px; }
+    .notif { background: #2a2a32; border: 1px solid var(--border2); border-radius: 14px; padding: 12px 16px; width: 320px; display: flex; gap: 10px; align-items: flex-start; box-shadow: 0 8px 24px rgba(0,0,0,.4); }
+    .notif-icon { font-size: 28px; flex-shrink: 0; }
+    .notif-body { flex: 1; }
+    .notif-app { font-size: 10px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .05em; }
+    .notif-title { font-size: 13px; font-weight: 600; margin-top: 2px; }
+    .notif-desc { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .notif-actions { display: flex; gap: 6px; margin-top: 8px; }
+    .notif-btn { font-size: 10px; padding: 3px 10px; border-radius: 6px; border: 1px solid var(--border); background: var(--surface2); color: var(--text); cursor: pointer; }
+    .notif-btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+    footer { margin-top: 64px; padding-top: 24px; border-top: 1px solid var(--border); font-size: 12px; color: var(--muted); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <!-- ═══════════ HEADER ═══════════════════════════════════════════════════ -->
+  <header>
+    <div class="eyebrow">Product Vision · BlackSwan Download Manager</div>
+    <h1>BlackSwan Download Manager</h1>
+    <div class="app-names">
+      <div class="app-name-tag">Display: <span>BlackSwan Download Manager</span></div>
+      <div class="app-name-tag">Short: <span>BDM</span></div>
+      <div class="app-name-tag">Executable: <code>bdm</code></div>
+      <div class="app-name-tag">CLI: <code>bdmctl</code></div>
+      <div class="app-name-tag">URL Scheme: <code>bdm://</code></div>
+      <div class="app-name-tag">Bundle ID: <code>com.amirhpcom.bdm</code></div>
+      <div class="app-name-tag">XPC Service: <code>com.amirhpcom.bdm.downloader</code></div>
+    </div>
+    <p class="subtitle">A native macOS download manager that splits files into segments, downloads each segment with multiple threads, reassembles them at full speed, and stays out of your way. No ads. No bloat. No Electron.</p>
+    <div class="version-pill">Plan revision <b>v0.3</b> · March 2026 · Multi-thread chunks, JSON i18n, complete settings, 3 view modes, notification system + more</div>
+  </header>
+
+  <!-- ═══════════ COMPETITOR AUDIT ═════════════════════════════════════════ -->
+  <section>
+    <h2>Competitor Audit</h2>
+    <div class="compare-grid">
+      <div class="compare-card"><h3>Folx</h3><div class="platform">macOS · Freemium</div><div class="pro-con"><div class="pro">Native feel</div><div class="pro">Multi-thread</div><div class="con">Speed gated $20</div><div class="con">BitTorrent bloat</div><div class="con">Pushy upsells</div></div></div>
+      <div class="compare-card"><h3>IDM</h3><div class="platform">Windows · $25</div><div class="pro-con"><div class="pro">Fastest segmented DL</div><div class="pro">Browser integration</div><div class="con">Windows only</div><div class="con">2003-era UI</div><div class="con">No localization community</div></div></div>
+      <div class="compare-card"><h3>Free DL Manager</h3><div class="platform">Cross-platform · Free</div><div class="pro-con"><div class="pro">aria2 backend</div><div class="pro">Open source</div><div class="con">Not macOS-native</div><div class="con">Feature sprawl</div></div></div>
+      <div class="compare-card"><h3>Motrix</h3><div class="platform">Electron · OSS</div><div class="pro-con"><div class="pro">Clean UI</div><div class="con">~200 MB Electron</div><div class="con">Abandoned</div><div class="con">No browser ext</div></div></div>
+      <div class="compare-card"><h3>Downie</h3><div class="platform">macOS · $19</div><div class="pro-con"><div class="pro">Very polished</div><div class="neutral">Video-focused only</div><div class="con">Not a DL manager</div></div></div>
+      <div class="compare-card"><h3>Browser built-in</h3><div class="platform">Free</div><div class="pro-con"><div class="pro">Zero friction</div><div class="con">Single thread</div><div class="con">No resume</div><div class="con">No routing</div></div></div>
+    </div>
+  </section>
+
+  <!-- ═══════════ PRINCIPLES ═══════════════════════════════════════════════ -->
+  <section>
+    <h2>Design Principles</h2>
+    <div class="principle-list">
+      <div class="principle"><div class="principle-icon">⚡</div><h3>Multi-thread everything</h3><p>Split into segments, download each segment with multiple threads in parallel, reassemble. Saturate your pipe.</p></div>
+      <div class="principle"><div class="principle-icon">🧘</div><h3>Radical simplicity</h3><p>3 view modes: detailed, compact, minimal. You choose how much to see.</p></div>
+      <div class="principle"><div class="principle-icon">🍎</div><h3>Platform citizen</h3><p>SwiftUI, Quick Look, Shortcuts, notifications, Share sheet. Feels like Apple built it.</p></div>
+      <div class="principle"><div class="principle-icon">🔒</div><h3>Secure by default</h3><p>Sandbox, Hardened Runtime, checksum verify, zero telemetry.</p></div>
+      <div class="principle"><div class="principle-icon">🌍</div><h3>Speak every language</h3><p>JSON-based localization. Drop a file, add a language. Community-translated.</p></div>
+      <div class="principle"><div class="principle-icon">📂</div><h3>You own your filesystem</h3><p>Auto-route by type, per-download override, complete settings export/import.</p></div>
+      <div class="principle"><div class="principle-icon">🔔</div><h3>Keep you informed</h3><p>Native macOS notifications on complete, error, batch done, checksum mismatch.</p></div>
+      <div class="principle"><div class="principle-icon">🛠</div><h3>Developer-friendly</h3><p><code>bdm://</code> URL scheme, <code>bdmctl</code> CLI, Shortcuts, JSON output.</p></div>
+    </div>
+  </section>
+
+  <!-- ═══════════ DOWNLOAD ENGINE ARCHITECTURE ═════════════════════════════ -->
+  <section>
+    <h2>Download Engine — Segment + Multi-Thread Architecture</h2>
+    <div class="callout"><strong>Core idea:</strong> A 1 GB file is split into 16 segments of ~64 MB each. Each segment is downloaded by 2–4 threads pulling sequential sub-ranges within that segment. All 16 segments download in parallel. When all sub-ranges of a segment complete, that segment is marked done. When all segments complete, BDM merges them into the final file via zero-copy assembly. This is faster than both single-thread and single-thread-per-segment approaches.</div>
+
+    <div class="engine-diagram">
+      <div class="engine-title">File: Xcode_16.2.xip (7.4 GB) — 16 Segments x 4 Threads = 64 Parallel Streams</div>
+      <div class="engine-flow">
+        <div class="engine-box">
+          <div class="box-label">HEAD Check</div>
+          <div class="box-value">7.4 GB</div>
+          <div class="box-desc">Accept-Ranges: bytes</div>
+        </div>
+        <div class="engine-arrow">→</div>
+        <div class="engine-box">
+          <div class="box-label">Segment Planner</div>
+          <div class="box-value">16 Segments</div>
+          <div class="box-desc">~475 MB each</div>
+        </div>
+        <div class="engine-arrow">→</div>
+        <div class="engine-sub">
+          <div class="engine-sub-box">Seg 1: bytes 0–474M <span class="thread-label">· 4 threads</span></div>
+          <div class="engine-sub-box">Seg 2: bytes 475–949M <span class="thread-label">· 4 threads</span></div>
+          <div class="engine-sub-box" style="color:var(--muted)">… segments 3–15 …</div>
+          <div class="engine-sub-box">Seg 16: bytes 7.0–7.4G <span class="thread-label">· 4 threads</span></div>
+        </div>
+        <div class="engine-arrow">→</div>
+        <div class="engine-box">
+          <div class="box-label">Sparse File</div>
+          <div class="box-value">Direct Write</div>
+          <div class="box-desc">pwrite() at offset</div>
+        </div>
+        <div class="engine-arrow">→</div>
+        <div class="engine-box" style="border-color: var(--green);">
+          <div class="box-label">Assembly</div>
+          <div class="box-value" style="color:var(--green)">Verify + Rename</div>
+          <div class="box-desc">SHA-256 check → done</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout"><strong>Per-segment threading:</strong> Each segment is further split into 2–4 sub-ranges. Thread count is auto-tuned: 2 threads for segments &lt;50 MB, 4 threads for &gt;200 MB. Each thread uses its own <code>URLSession</code> data task with a <code>Range</code> header for its sub-range. All threads write to the same pre-allocated sparse file using <code>pwrite()</code> at their exact byte offset — no temp files, no copy, no merge step needed.</div>
+
+    <div class="callout"><strong>Assembly strategy:</strong> Since all threads write directly to correct offsets in a single sparse file, "assembly" is just: (1) verify all byte ranges are complete, (2) optional SHA-256 verify, (3) atomic rename from <code>.bdm-partial</code> to final filename. Zero-copy. The whole operation is a single <code>rename()</code> syscall.</div>
+
+    <div class="callout"><strong>Adaptive speed:</strong> Every 500ms, the engine measures throughput per thread. If a thread is bottlenecked (slow CDN shard, congested route), it is cancelled and its remaining sub-range is reassigned to a new connection. Segments that finish early donate their thread capacity to the slowest active segment.</div>
+  </section>
+
+  <!-- ═══════════ NOTIFICATION SYSTEM ══════════════════════════════════════ -->
+  <section>
+    <h2>Notification System</h2>
+    <div class="callout"><strong>Uses native <code>UserNotifications</code> framework.</strong> Grouped by batch. Actions are tappable. Sound customizable in settings. All notifications respect macOS Focus modes.</div>
+    <div class="notif-mock" style="flex-wrap:wrap">
+      <div class="notif">
+        <div class="notif-icon">✅</div>
+        <div class="notif-body">
+          <div class="notif-app">BlackSwan Download Manager</div>
+          <div class="notif-title">Xcode_16.2.xip — Complete</div>
+          <div class="notif-desc">7.4 GB downloaded in 2m 14s · SHA-256 ✓ verified</div>
+          <div class="notif-actions">
+            <button class="notif-btn primary">Reveal in Finder</button>
+            <button class="notif-btn">Open File</button>
+          </div>
+        </div>
+      </div>
+      <div class="notif">
+        <div class="notif-icon">📦</div>
+        <div class="notif-body">
+          <div class="notif-app">BlackSwan Download Manager</div>
+          <div class="notif-title">Batch "Ubuntu 24.04" — All 3 files done</div>
+          <div class="notif-desc">3.1 GB total · Saved to ~/Downloads/Ubuntu 24.04/</div>
+          <div class="notif-actions">
+            <button class="notif-btn primary">Open Folder</button>
+          </div>
+        </div>
+      </div>
+      <div class="notif">
+        <div class="notif-icon">⚠️</div>
+        <div class="notif-body">
+          <div class="notif-app">BlackSwan Download Manager</div>
+          <div class="notif-title">homebrew-4.2.0.pkg — Failed</div>
+          <div class="notif-desc">Connection timeout after 5 retries · 45% complete</div>
+          <div class="notif-actions">
+            <button class="notif-btn primary">Retry Now</button>
+            <button class="notif-btn">Dismiss</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ UI MOCK: 3 VIEW MODES ═══════════════════════════════════ -->
+  <section>
+    <h2>UI Vision — 3 List View Modes</h2>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:16px">Users can switch view modes using the toggle in the titlebar or <kbd>⌘</kbd><kbd>1</kbd> / <kbd>⌘</kbd><kbd>2</kbd> / <kbd>⌘</kbd><kbd>3</kbd>. Persisted per window.</p>
+
+    <!-- Detailed view -->
+    <div class="ui-mock" style="margin-bottom:16px">
+      <div class="ui-titlebar">
+        <div class="tl tl-r"></div><div class="tl tl-y"></div><div class="tl tl-g"></div>
+        <div class="collapse-btn">◀</div>
+        <div class="ui-titlebar-center">BlackSwan Download Manager</div>
+        <div class="ui-titlebar-right">
+          <div class="view-toggle">
+            <button class="view-toggle-btn active">Detailed</button>
+            <button class="view-toggle-btn">Compact</button>
+            <button class="view-toggle-btn">Minimal</button>
+          </div>
+          <button class="tbar-btn primary">+ Add URLs</button>
+          <button class="tbar-btn">⚙</button>
+        </div>
+      </div>
+      <div style="max-height:220px;overflow:hidden">
+        <div class="ui-filter-bar">
+          <div class="filter-chip active">All <span style="color:#aaa;margin-left:2px">6</span></div>
+          <div class="filter-chip">▶ Active <span style="color:#aaa;margin-left:2px">2</span></div>
+          <div class="filter-chip" style="color:var(--green)">✓ Done <span style="color:#aaa;margin-left:2px">3</span></div>
+          <div class="filter-chip" style="color:var(--red)">✗ Failed <span style="color:#aaa;margin-left:2px">1</span></div>
+          <button class="sort-btn">↕ Size</button>
+          <input class="filter-search" type="text" placeholder="⌘F  Search…" />
+        </div>
+        <div class="dl-row selected">
+          <div class="status-dot dot-active"></div>
+          <div class="file-icon">📦</div>
+          <div class="dl-meta">
+            <div class="dl-name">Xcode_16.2.xip</div>
+            <div class="dl-sub">7.4 GB · developer.apple.com · 16 seg × 4 threads = 64 streams</div>
+            <div class="dl-path">~/Downloads/Dev Tools/Xcode_16.2.xip</div>
+            <div class="segment-vis">
+              <div class="seg done"></div><div class="seg done"></div><div class="seg done"></div><div class="seg done"></div>
+              <div class="seg active"></div><div class="seg active"></div><div class="seg partial"></div><div class="seg partial"></div>
+              <div class="seg"></div><div class="seg"></div><div class="seg"></div><div class="seg"></div>
+              <div class="seg"></div><div class="seg"></div><div class="seg"></div><div class="seg"></div>
+            </div>
+          </div>
+          <div class="dl-right"><div class="dl-speed">↓ 84 MB/s</div><div class="dl-size">4.6 / 7.4 GB · ~48s</div></div>
+        </div>
+        <div class="dl-row">
+          <div class="status-dot dot-done"></div>
+          <div class="file-icon">🖥</div>
+          <div class="dl-meta">
+            <div class="dl-name">macOS-Sequoia.ipsw</div>
+            <div class="dl-sub">13.1 GB · apple.com · SHA-256 ✓ verified · 2m 14s</div>
+            <div class="dl-path">~/Downloads/Disk Images/macOS-Sequoia.ipsw</div>
+            <div class="progress-wrap"><div class="progress-bar green" style="width:100%"></div></div>
+          </div>
+          <div class="dl-right"><div class="dl-speed green">Complete</div><div class="dl-size">13.1 GB</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Compact view -->
+    <div class="ui-mock" style="margin-bottom:16px">
+      <div class="ui-titlebar">
+        <div class="tl tl-r"></div><div class="tl tl-y"></div><div class="tl tl-g"></div>
+        <div class="ui-titlebar-center">BlackSwan Download Manager — Compact View</div>
+        <div class="ui-titlebar-right">
+          <div class="view-toggle">
+            <button class="view-toggle-btn">Detailed</button>
+            <button class="view-toggle-btn active">Compact</button>
+            <button class="view-toggle-btn">Minimal</button>
+          </div>
+        </div>
+      </div>
+      <div style="padding:0">
+        <div class="dl-compact">
+          <div class="status-dot dot-active"></div>
+          <span style="font-size:16px">📦</span>
+          <div class="dl-name">Xcode_16.2.xip</div>
+          <div class="compact-progress"><div class="progress-wrap"><div class="progress-bar" style="width:62%"></div></div></div>
+          <div class="compact-pct" style="color:var(--accent)">62%</div>
+          <div class="dl-speed" style="width:70px;text-align:right">84 MB/s</div>
+        </div>
+        <div class="dl-compact">
+          <div class="status-dot dot-active"></div>
+          <span style="font-size:16px">🐳</span>
+          <div class="dl-name">Docker.dmg</div>
+          <div class="compact-progress"><div class="progress-wrap"><div class="progress-bar" style="width:88%"></div></div></div>
+          <div class="compact-pct" style="color:var(--accent)">88%</div>
+          <div class="dl-speed" style="width:70px;text-align:right">22 MB/s</div>
+        </div>
+        <div class="dl-compact">
+          <div class="status-dot dot-done"></div>
+          <span style="font-size:16px">🖥</span>
+          <div class="dl-name">macOS-Sequoia.ipsw</div>
+          <div class="compact-progress"><div class="progress-wrap"><div class="progress-bar green" style="width:100%"></div></div></div>
+          <div class="compact-pct" style="color:var(--green)">100%</div>
+          <div class="dl-speed green" style="width:70px;text-align:right">Done</div>
+        </div>
+        <div class="dl-compact">
+          <div class="status-dot dot-err"></div>
+          <span style="font-size:16px">📦</span>
+          <div class="dl-name">homebrew-4.2.0.pkg</div>
+          <div class="compact-progress"><div class="progress-wrap"><div class="progress-bar red" style="width:45%"></div></div></div>
+          <div class="compact-pct" style="color:var(--red)">45%</div>
+          <div class="dl-speed red" style="width:70px;text-align:right">Retry…</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Minimal view -->
+    <div class="ui-mock">
+      <div class="ui-titlebar">
+        <div class="tl tl-r"></div><div class="tl tl-y"></div><div class="tl tl-g"></div>
+        <div class="ui-titlebar-center">BlackSwan Download Manager — Minimal View</div>
+        <div class="ui-titlebar-right">
+          <div class="view-toggle">
+            <button class="view-toggle-btn">Detailed</button>
+            <button class="view-toggle-btn">Compact</button>
+            <button class="view-toggle-btn active">Minimal</button>
+          </div>
+        </div>
+      </div>
+      <div style="padding:0">
+        <div class="dl-minimal"><div class="status-dot dot-active" style="margin-top:0"></div><div class="dl-name">Xcode_16.2.xip</div><div class="mini-bar"><div class="progress-wrap" style="margin:0"><div class="progress-bar" style="width:62%"></div></div></div><div class="mini-pct" style="color:var(--accent)">62%</div></div>
+        <div class="dl-minimal"><div class="status-dot dot-active" style="margin-top:0"></div><div class="dl-name">Docker.dmg</div><div class="mini-bar"><div class="progress-wrap" style="margin:0"><div class="progress-bar" style="width:88%"></div></div></div><div class="mini-pct" style="color:var(--accent)">88%</div></div>
+        <div class="dl-minimal"><div class="status-dot dot-done" style="margin-top:0"></div><div class="dl-name">macOS-Sequoia.ipsw</div><div class="mini-bar"><div class="progress-wrap" style="margin:0"><div class="progress-bar green" style="width:100%"></div></div></div><div class="mini-pct" style="color:var(--green)">100%</div></div>
+        <div class="dl-minimal"><div class="status-dot dot-paused" style="margin-top:0"></div><div class="dl-name">WWDC2025-sessions.zip</div><div class="mini-bar"><div class="progress-wrap" style="margin:0"><div class="progress-bar yellow" style="width:31%"></div></div></div><div class="mini-pct">31%</div></div>
+        <div class="dl-minimal"><div class="status-dot dot-err" style="margin-top:0"></div><div class="dl-name">homebrew-4.2.0.pkg</div><div class="mini-bar"><div class="progress-wrap" style="margin:0"><div class="progress-bar red" style="width:45%"></div></div></div><div class="mini-pct" style="color:var(--red)">45%</div></div>
+        <div class="dl-minimal"><div class="status-dot dot-done" style="margin-top:0"></div><div class="dl-name">WWDC25-soundtrack.mp3</div><div class="mini-bar"><div class="progress-wrap" style="margin:0"><div class="progress-bar green" style="width:100%"></div></div></div><div class="mini-pct" style="color:var(--green)">100%</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ JSON LOCALIZATION ════════════════════════════════════════ -->
+  <section>
+    <h2>JSON Localization System</h2>
+    <div class="callout"><strong>No .strings, no .stringsdict.</strong> BDM uses flat JSON files for localization. One file per language. Community translators fork the repo, add a <code>{lang}.json</code>, and submit a PR. The app ships with <code>en.json</code> and loads others from <code>~/Library/Application Support/BDM/Locales/</code> at runtime.</div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+      <div>
+        <div style="font-size:11px;font-weight:600;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em">en.json (bundled default)</div>
+        <div class="json-mock">{
+  <span class="json-key">"app.name"</span>: <span class="json-str">"BlackSwan Download Manager"</span>,
+  <span class="json-key">"menu.add_urls"</span>: <span class="json-str">"Add URLs"</span>,
+  <span class="json-key">"menu.pause_all"</span>: <span class="json-str">"Pause All"</span>,
+  <span class="json-key">"menu.resume_all"</span>: <span class="json-str">"Resume All"</span>,
+  <span class="json-key">"filter.all"</span>: <span class="json-str">"All"</span>,
+  <span class="json-key">"filter.active"</span>: <span class="json-str">"Active"</span>,
+  <span class="json-key">"filter.done"</span>: <span class="json-str">"Done"</span>,
+  <span class="json-key">"filter.failed"</span>: <span class="json-str">"Failed"</span>,
+  <span class="json-key">"notif.complete"</span>: <span class="json-str">"{{file}} — Complete"</span>,
+  <span class="json-key">"notif.complete.body"</span>: <span class="json-str">"{{size}} in {{time}}"</span>,
+  <span class="json-key">"detail.segments"</span>: <span class="json-str">"{{n}} segments × {{t}} threads"</span>,
+  <span class="json-key">"settings.export"</span>: <span class="json-str">"Export Settings"</span>,
+  <span class="json-key">"settings.import"</span>: <span class="json-str">"Import Settings"</span>,
+  <span class="json-key">"view.detailed"</span>: <span class="json-str">"Detailed"</span>,
+  <span class="json-key">"view.compact"</span>: <span class="json-str">"Compact"</span>,
+  <span class="json-key">"view.minimal"</span>: <span class="json-str">"Minimal"</span>
+}</div>
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:600;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em">fa.json (community contributed)</div>
+        <div class="json-mock">{
+  <span class="json-key">"app.name"</span>: <span class="json-str">"بلک‌سوان مدیریت دانلود"</span>,
+  <span class="json-key">"menu.add_urls"</span>: <span class="json-str">"افزودن لینک‌ها"</span>,
+  <span class="json-key">"menu.pause_all"</span>: <span class="json-str">"توقف همه"</span>,
+  <span class="json-key">"menu.resume_all"</span>: <span class="json-str">"ادامه همه"</span>,
+  <span class="json-key">"filter.all"</span>: <span class="json-str">"همه"</span>,
+  <span class="json-key">"filter.active"</span>: <span class="json-str">"فعال"</span>,
+  <span class="json-key">"filter.done"</span>: <span class="json-str">"تمام شده"</span>,
+  <span class="json-key">"filter.failed"</span>: <span class="json-str">"ناموفق"</span>,
+  <span class="json-key">"notif.complete"</span>: <span class="json-str">"{{file}} — تکمیل شد"</span>,
+  <span class="json-key">"notif.complete.body"</span>: <span class="json-str">"{{size}} در {{time}}"</span>,
+  <span class="json-key">"detail.segments"</span>: <span class="json-str">"{{n}} بخش × {{t}} نخ"</span>,
+  <span class="json-key">"settings.export"</span>: <span class="json-str">"خروجی تنظیمات"</span>,
+  <span class="json-key">"settings.import"</span>: <span class="json-str">"ورودی تنظیمات"</span>,
+  <span class="json-key">"view.detailed"</span>: <span class="json-str">"کامل"</span>,
+  <span class="json-key">"view.compact"</span>: <span class="json-str">"فشرده"</span>,
+  <span class="json-key">"view.minimal"</span>: <span class="json-str">"ساده"</span>
+}</div>
+      </div>
+    </div>
+    <div class="callout"><strong>How it works:</strong> (1) <code>BDMLocalizer</code> class loads <code>en.json</code> from app bundle at launch. (2) If user has selected another language in settings, overlay that JSON on top — missing keys fall back to English. (3) <code>{{var}}</code> placeholders resolved at runtime via string interpolation. (4) RTL languages auto-detected from JSON metadata key <code>"_direction": "rtl"</code>.</div>
+    <div class="callout"><strong>For translators:</strong> Fork repo → copy <code>en.json</code> → rename to your lang code → translate values (never keys) → PR. BDM validates JSON on load and reports any missing keys to Console.app. Partial translations are fine — untranslated keys show English.</div>
+  </section>
+
+  <!-- ═══════════ COMPLETE SETTINGS ════════════════════════════════════════ -->
+  <section>
+    <h2>UI Vision — Complete Settings Window</h2>
+    <div class="settings-mock">
+      <div class="settings-tabs">
+        <div class="stab active">General</div>
+        <div class="stab">Downloads</div>
+        <div class="stab">Folders &amp; Routing</div>
+        <div class="stab">Network</div>
+        <div class="stab">Browser</div>
+        <div class="stab">Notifications</div>
+        <div class="stab">Language</div>
+        <div class="stab">Advanced</div>
+      </div>
+
+      <!-- General Tab -->
+      <div class="settings-body">
+        <div class="settings-2col">
+          <div>
+            <div class="setting-group-title">Startup</div>
+            <div class="setting-row"><div><div class="setting-name">Launch at login</div></div><div class="toggle"></div></div>
+            <div class="setting-row"><div><div class="setting-name">Start minimized to menu bar</div></div><div class="toggle off"></div></div>
+            <div class="setting-row"><div><div class="setting-name">Show Dock icon</div><div class="setting-desc">Disable to run as menu bar-only app</div></div><div class="toggle"></div></div>
+            <div class="setting-row"><div><div class="setting-name">Check for updates</div></div><div class="toggle"></div></div>
+          </div>
+          <div>
+            <div class="setting-group-title">Appearance</div>
+            <div class="setting-row"><div><div class="setting-name">Theme</div></div><select class="mini-select"><option>System</option><option>Light</option><option>Dark</option></select></div>
+            <div class="setting-row"><div><div class="setting-name">Default view mode</div></div><select class="mini-select"><option>Detailed</option><option>Compact</option><option>Minimal</option></select></div>
+            <div class="setting-row"><div><div class="setting-name">Show sidebar on launch</div></div><div class="toggle"></div></div>
+            <div class="setting-row"><div><div class="setting-name">Confirm before removing downloads</div></div><div class="toggle"></div></div>
+          </div>
+        </div>
+        <div style="margin-top:16px">
+          <div class="settings-2col">
+            <div>
+              <div class="setting-group-title">Downloads Engine</div>
+              <div class="setting-row"><div><div class="setting-name">Default segments per file</div></div><select class="mini-select"><option>Auto</option><option>4</option><option>8</option><option selected>16</option><option>32</option></select></div>
+              <div class="setting-row"><div><div class="setting-name">Threads per segment</div></div><select class="mini-select"><option>Auto</option><option>1</option><option>2</option><option selected>4</option></select></div>
+              <div class="setting-row"><div><div class="setting-name">Max concurrent downloads</div></div><select class="mini-select"><option>1</option><option>2</option><option selected>3</option><option>5</option><option>8</option></select></div>
+              <div class="setting-row"><div><div class="setting-name">Max retries on failure</div></div><input class="mini-input" value="5" /></div>
+              <div class="setting-row"><div><div class="setting-name">Auto-retry on network reconnect</div></div><div class="toggle"></div></div>
+            </div>
+            <div>
+              <div class="setting-group-title">Completion</div>
+              <div class="setting-row"><div><div class="setting-name">Play sound on complete</div></div><select class="mini-select"><option>System default</option><option>Custom…</option><option>None</option></select></div>
+              <div class="setting-row"><div><div class="setting-name">Auto-open file after download</div></div><div class="toggle off"></div></div>
+              <div class="setting-row"><div><div class="setting-name">Auto-unarchive .zip, .tar.gz, .rar</div></div><div class="toggle off"></div></div>
+              <div class="setting-row"><div><div class="setting-name">Auto-mount .dmg files</div></div><div class="toggle off"></div></div>
+              <div class="setting-row"><div><div class="setting-name">Remove .bdm-partial on complete</div><div class="setting-desc">Temp file cleanup (recommended on)</div></div><div class="toggle"></div></div>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:16px">
+          <div class="settings-2col">
+            <div>
+              <div class="setting-group-title">Bandwidth</div>
+              <div class="setting-row"><div><div class="setting-name">Global speed limit</div></div><div style="display:flex;gap:6px;align-items:center"><input class="mini-input" value="0" /><span style="font-size:11px;color:var(--muted)">MB/s (0 = unlimited)</span></div></div>
+              <div class="setting-row"><div><div class="setting-name">Throttle on battery</div></div><div class="toggle"></div></div>
+              <div class="setting-row"><div><div class="setting-name">Battery throttle limit</div></div><div style="display:flex;gap:6px;align-items:center"><input class="mini-input" value="5" /><span style="font-size:11px;color:var(--muted)">MB/s</span></div></div>
+              <div class="setting-row"><div><div class="setting-name">Per-domain connection limit</div></div><select class="mini-select"><option>2</option><option selected>4</option><option>8</option><option>Unlimited</option></select></div>
+            </div>
+            <div>
+              <div class="setting-group-title">Scheduler</div>
+              <div class="setting-row"><div><div class="setting-name">Enable download schedule</div></div><div class="toggle off"></div></div>
+              <div class="setting-row"><div><div class="setting-name">Active hours</div></div><div style="display:flex;gap:4px;align-items:center"><input class="mini-input" value="02:00" style="width:55px" /><span style="font-size:11px;color:var(--muted)">to</span><input class="mini-input" value="07:00" style="width:55px" /></div></div>
+              <div class="setting-row"><div><div class="setting-name">Pause outside hours</div></div><div class="toggle off"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Export / Import footer -->
+      <div class="settings-footer">
+        <div style="display:flex;gap:8px">
+          <button class="modal-btn">📤 Export Settings…</button>
+          <button class="modal-btn">📥 Import Settings…</button>
+          <button class="modal-btn" style="color:var(--red)">↩ Reset to Defaults</button>
+        </div>
+        <div style="font-size:10px;color:var(--muted2)">Settings file: ~/Library/Application Support/BDM/settings.json</div>
+      </div>
+    </div>
+    <div class="callout" style="margin-top:12px"><strong>Export/Import:</strong> Settings exported as a single <code>bdm-settings.json</code> file. Includes all tabs: engine config, routing rules, notification prefs, language choice, keyboard shortcuts. Import validates the JSON schema before applying. Useful for team-wide configs or migrating to a new Mac.</div>
+  </section>
+
+  <!-- ═══════════ FULL FEATURE TABLE ═══════════════════════════════════════ -->
+  <section>
+    <h2>Full Feature Scope</h2>
+    <table class="feature-table">
+      <thead><tr><th style="width:36%">Feature</th><th style="width:12%">Priority</th><th style="width:11%">Release</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr class="group-row"><td colspan="4">Download Engine (Segment + Multi-Thread)</td></tr>
+        <tr><td>Segmented HTTP(S) downloads (2–32 segments)</td><td><span class="badge badge-must">Must</span></td><td><span class="badge badge-v1">v1.0</span></td><td>Auto-tuned via HEAD check for Accept-Ranges + Content-Length</td></tr>
+        <tr><td>Multi-thread per segment (2–4 threads/seg)</td><td><span class="badge badge-must">Must</span></td><td><span class="badge badge-v1">v1.0</span></td><td>Each thread downloads a sub-range within the segment. Auto-scaled.</td></tr>
+        <tr><td>Zero-copy assembly via sparse file + pwrite()</td><td><span class="badge badge-must">Must</span></td><td><span class="badge badge-v1">v1.0</span></td><td>All threads write to correct byte offset. Final step = rename()</td></tr>
+        <tr><td>Adaptive thread rebalancing (500ms interval)</td><td><span class="badge badge-must">Must</span></td><td><span class="badge badge-v1">v1.0</span></td><td>Cancel slow threads, reassign sub-range to new connection</td></tr>
+        <tr><td>Resume interrupted downloads</td><td><span class="badge badge-must">Must</span></td><td><span class="badge badge-v1">v1.0</span></td><td>Per-thread byte offset persisted in SwiftData</td></tr>
+        <tr><td>Queue with drag-reorder + priority</td><td><span class="badge badge-must">Must</span></td><td><span class="badge badge-v1">v1.0</span></td><td>Max concurrent slots (default 3). ⌘↑↓ to reprioritize.</td></tr>
+        <tr><td>Auto retry + exponential back-off</td><td><span class="badge badge-must">Must</span></td><td><span class="badge badge-v1">v1.0</span></td><td>Configurable retries, honours Retry-After headers</td></tr>
+        <tr><td>SHA-256 / MD5 / SHA-512 checksum verify</td><td><span class="badge badge-must">Must</span></td><td><span class="badge badge-v1">v1.0</span></td><td>Auto-verify on complete. Paste hash or auto-match SHA256SUMS.</td></tr>
+        <tr><td>XPC service (survives app quit)</td><td><span class="badge badge-must">Must</span></td><td><span class="badge badge-v1">v1.0</span></td><td><code>com.amirhpcom.bdm.downloader</code> keeps downloading when window is closed</td></tr>
+        <tr><td>HEAD pre-check before queueing</td><td><span class="badge badge-must">Must</span></td><td><span class="badge badge-v1">v1.0</span></td><td>Shows filename, size, resume support before download starts</td></tr>
+
+        <tr class="group-row"><td colspan="4">Notifications</td></tr>
+        <tr><td>Download complete notification</td><td><span class="badge badge-must">Must</span></td><td><span class="badge badge-v1">v1.0</span></td><td>Shows filename, size, time. Actions: Reveal in Finder, Open File.</td></tr>
+        <tr><td>Batch complete notification</td><td><span class="badge badge-must">Must</span></td><td><span class="badge badge-v1">v1.0</span></td><td>"All N files done" with Open Folder action</td></tr>
+        <tr><td>Error / failed notification</td><td><span class="badge badge-must">Must</span></td><td><span class="badge badge-v1">v1.0</span></td><td>Shows reason. Actions: Retry Now, Dismiss.</td></tr>
+        <tr><td>Checksum mismatch warning</td><td><span class="badge badge-must">Must</span></td><td><span class="badge badge-v1">v1.0</span></td><td>Critical alert style. Actions: Re-download, Delete, Ignore.</td></tr>
+        <tr><td>Custom notification sound</td><td><span class="badge badge-nice">Nice</span></td><td><span class="badge badge-v1">v1.0</span></td><td>Configurable in Settings → Notifications</td></tr>
+
+        <tr class="group-row"><td colspan="4">View Modes</td></tr>
+        <tr><td>Detailed view (full info + segment map + path)</td><td><span class="badge badge-must">Must</span></td><td><span class="badge badge-v1">v1.0</span></td><td>Default. Shows icon, name, source, path, segment vis, speed, ETA.</td></tr>
+        <tr><td>Compact view (name + bar + percent + speed)</td><td><span class="badge badge-must">Must</span></td><td><span class="badge badge-v1">v1.0</span></td><td>⌘2. Single-line row. ~20 items visible without scroll.</td></tr>
+        <tr><td>Minimal view (name + mini bar + percent)</td><td><span class="badge badge-must">Must</span></td><td><span class="badge badge-v1">v1.0</span></td><td>⌘3. Ultra-dense. ~30 items visible. For large queues.</td></tr>
+        <tr><td>Persist view mode per window</td><td><span class="badge badge-must">Must</span></td><td><span class="badge badge-v1">v1.0</span></td><td>Survives restart</td></tr>
+
+        <tr class="group-row"><td colspan="4">Localization (JSON i18n)</td></tr>
+        <tr><td>JSON-based language files (one .json per language)</td><td><span class="badge badge-must">Must</span></td><td><span class="badge badge-v1">v1.0</span></td><td>Key-value pairs with {{var}} interpolation. Fallback to English.</td></tr>
+        <tr><td>Runtime locale override from ~/Library/.../BDM/Locales/</td><td><span class="badge badge-must">Must</span></td><td><span class="badge badge-v1">v1.0</span></td><td>Drop a .json, restart → new language available</td></tr>
+        <tr><td>RTL support via _direction metadata key</td><td><span class="badge badge-must">Must</span></td><td><span class="badge badge-v1">v1.0</span></td><td>Arabic, Hebrew, Persian layout auto-mirrored</td></tr>
+        <tr><td>Language picker in Settings → Language tab</td><td><span class="badge badge-must">Must</span></td><td><span class="badge badge-v1">v1.0</span></td><td>Shows all detected .json files with completion %</td></tr>
+        <tr><td>Built-in translation validator</td><td><span class="badge badge-nice">Nice</span></td><td><span class="badge badge-v2">v1.1</span></td><td>Reports missing keys, unused keys, placeholder mismatches</td></tr>
+
+        <tr class="group-row"><td colspan="4">Settings (Complete)</td></tr>
+        <tr><td>8-tab settings window (General, Downloads, Folders, Network, Browser, Notifications, Language, Advanced)</td><td><span class="badge badge-must">Must</span></td><td><span class="badge badge-v1">v1.0</span></td><td>Every config in one place. Separate window per HIG.</td></tr>
+        <tr><td>Export settings as bdm-settings.json</td><td><span class="badge badge-must">Must</span></td><td><span class="badge badge-v1">v1.0</span></td><td>All tabs + routing rules + keyboard shortcuts</td></tr>
+        <tr><td>Import settings from .json file</td><td><span class="badge badge-must">Must</span></td><td><span class="badge badge-v1">v1.0</span></td><td>Schema validation before apply. Warns on version mismatch.</td></tr>
+        <tr><td>Reset to defaults</td><td><span class="badge badge-must">Must</span></td><td><span class="badge badge-v1">v1.0</span></td><td>Confirmation dialog with option to export first</td></tr>
+
+        <tr class="group-row"><td colspan="4">Bulk &amp; Batch</td></tr>
+        <tr><td>Paste multiple URLs (bulk add sheet)</td><td><span class="badge badge-must">Must</span></td><td><span class="badge badge-v1">v1.0</span></td><td>Parse, dedup, preview with sizes. Per-file folder override.</td></tr>
+        <tr><td>Batch group (shared folder + notification)</td><td><span class="badge badge-must">Must</span></td><td><span class="badge badge-v1">v1.0</span></td><td>Group ring in menu bar. Single "all done" alert.</td></tr>
+        <tr><td>URL pattern expander [1-50]</td><td><span class="badge badge-nice">Nice</span></td><td><span class="badge badge-v2">v1.1</span></td><td>Expand numbered sequences in Add sheet</td></tr>
+        <tr><td>Import URLs from .txt file</td><td><span class="badge badge-nice">Nice</span></td><td><span class="badge badge-v1">v1.0</span></td><td>Drag .txt onto window or Dock icon</td></tr>
+
+        <tr class="group-row"><td colspan="4">Folders &amp; Routing</td></tr>
+        <tr><td>Auto-route rules (extension → folder)</td><td><span class="badge badge-must">Must</span></td><td><span class="badge badge-v1">v1.0</span></td><td>Drag-ordered, first-match, default catch-all</td></tr>
+        <tr><td>Domain-based folder override</td><td><span class="badge badge-must">Must</span></td><td><span class="badge badge-v1">v1.0</span></td><td>Per-domain rules alongside extension rules</td></tr>
+        <tr><td>Per-download folder override</td><td><span class="badge badge-must">Must</span></td><td><span class="badge badge-v1">v1.0</span></td><td>Browse dialog with recents + iCloud</td></tr>
+        <tr><td>Post-download actions</td><td><span class="badge badge-nice">Nice</span></td><td><span class="badge badge-v2">v1.1</span></td><td>Auto-unzip, mount DMG, run shell script</td></tr>
+
+        <tr class="group-row"><td colspan="4">Item Actions</td></tr>
+        <tr><td>Copy URL / Copy path / Reveal in Finder</td><td><span class="badge badge-must">Must</span></td><td><span class="badge badge-v1">v1.0</span></td><td>⌘C / ⌘⇧C / ⌘R — also in context menu</td></tr>
+        <tr><td>Quick Look (⌥Space on completed item)</td><td><span class="badge badge-must">Must</span></td><td><span class="badge badge-v1">v1.0</span></td><td>Standard QLPreviewPanel</td></tr>
+        <tr><td>Duplicate detection</td><td><span class="badge badge-must">Must</span></td><td><span class="badge badge-v1">v1.0</span></td><td>Check URL + filename before queueing</td></tr>
+        <tr><td>Re-download / Undo remove</td><td><span class="badge badge-must">Must</span></td><td><span class="badge badge-v1">v1.0</span></td><td>Cmd+Z to restore removed queue entry</td></tr>
+
+        <tr class="group-row"><td colspan="4">macOS Integration</td></tr>
+        <tr><td>Menu bar status + speed graph popover</td><td><span class="badge badge-must">Must</span></td><td><span class="badge badge-v1">v1.0</span></td><td>60s sparkline, active count, ETA</td></tr>
+        <tr><td>Apple Shortcuts (AppIntents)</td><td><span class="badge badge-must">Must</span></td><td><span class="badge badge-v1">v1.0</span></td><td>Add URL, Pause All, Resume All, Get Queue Status</td></tr>
+        <tr><td>URL scheme: <code>bdm://add?url=&amp;save=&amp;seg=&amp;threads=</code></td><td><span class="badge badge-must">Must</span></td><td><span class="badge badge-v1">v1.0</span></td><td>Terminal, Raycast, Alfred, Shortcuts</td></tr>
+        <tr><td>CLI: <code>bdmctl add</code>, <code>bdmctl list --json</code></td><td><span class="badge badge-nice">Nice</span></td><td><span class="badge badge-v2">v1.1</span></td><td>Swift ArgumentParser, piped output</td></tr>
+        <tr><td>Safari + Chrome + Firefox extensions</td><td><span class="badge badge-must">Must</span></td><td><span class="badge badge-v1">v1.0</span></td><td>MV3 manifest, native messaging to XPC</td></tr>
+        <tr><td>Spotlight integration (search download history)</td><td><span class="badge badge-nice">Nice</span></td><td><span class="badge badge-v2">v1.1</span></td><td>CoreSpotlight index of completed downloads</td></tr>
+        <tr><td>macOS file tags on complete</td><td><span class="badge badge-nice">Nice</span></td><td><span class="badge badge-v2">v1.1</span></td><td>Configurable per routing rule</td></tr>
+
+        <tr class="group-row"><td colspan="4">Network &amp; Security</td></tr>
+        <tr><td>Bandwidth throttle (global + per-download + battery)</td><td><span class="badge badge-must">Must</span></td><td><span class="badge badge-v1">v1.0</span></td><td>Token bucket with presets</td></tr>
+        <tr><td>Per-domain concurrency limit</td><td><span class="badge badge-must">Must</span></td><td><span class="badge badge-v1">v1.0</span></td><td>Default 4/domain, configurable</td></tr>
+        <tr><td>Custom headers / Cookie import</td><td><span class="badge badge-nice">Nice</span></td><td><span class="badge badge-v1">v1.0</span></td><td>Keychain-stored. For auth'd CDN downloads.</td></tr>
+        <tr><td>Proxy support (system + SOCKS5)</td><td><span class="badge badge-nice">Nice</span></td><td><span class="badge badge-v2">v1.1</span></td><td>Respect system, allow per-download override</td></tr>
+        <tr><td>App Sandbox + Hardened Runtime + Notarization</td><td><span class="badge badge-must">Must</span></td><td><span class="badge badge-v1">v1.0</span></td><td>Minimum entitlements</td></tr>
+        <tr><td>Zero telemetry / no accounts</td><td><span class="badge badge-must">Must</span></td><td><span class="badge badge-v1">v1.0</span></td><td>Offline license check only</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ═══════════ MORE FEATURES ════════════════════════════════════════════ -->
+  <section>
+    <h2>Additional Features</h2>
+    <div class="nf-grid">
+      <div class="nf-card"><div class="nf-badge" style="background:#1a2e1a;color:var(--green)">Engine</div><h3>Intelligent segment sizing</h3><p>Smaller segments for slow servers (more parallelism), larger segments for fast CDNs (less overhead). Learned per-domain over time.</p></div>
+      <div class="nf-card"><div class="nf-badge" style="background:#1a2e1a;color:var(--green)">Engine</div><h3>Mirror / fallback URLs</h3><p>Add multiple mirrors for the same file. If primary stalls, remaining segments pull from the mirror. Common for Linux ISOs.</p></div>
+      <div class="nf-card"><div class="nf-badge" style="background:#1a2e1a;color:var(--green)">Engine</div><h3>Speed test on first connect</h3><p>Brief 2-second burst test on first segment → auto-set optimal segment count and threads. No user tuning needed.</p></div>
+      <div class="nf-card"><div class="nf-badge" style="background:#2a1e2e;color:var(--accent2)">UX</div><h3>Download notes / comments</h3><p>Right-click → Add Note on any download. "This is for the staging server" or "Re-download after v2.1 ships". Searchable.</p></div>
+      <div class="nf-card"><div class="nf-badge" style="background:#2a1e2e;color:var(--accent2)">UX</div><h3>Download history with stats</h3><p>Total downloaded this week / month / all time. Average speed. Top domains. Exportable. Fun and useful for tracking bandwidth usage.</p></div>
+      <div class="nf-card"><div class="nf-badge" style="background:#2a1e2e;color:var(--accent2)">UX</div><h3>Global hotkey to show/hide</h3><p>Configurable system-wide hotkey (e.g. ⌥⌘D) toggles the BDM window. Like Spotlight for downloads.</p></div>
+      <div class="nf-card"><div class="nf-badge" style="background:#2a1e2e;color:var(--accent2)">UX</div><h3>Drag files out of BDM</h3><p>Drag a completed download row directly into Finder, Mail, Slack, etc. Standard NSPasteboard file promise.</p></div>
+      <div class="nf-card"><div class="nf-badge" style="background:#1e1e2e;color:var(--accent)">Network</div><h3>Network interface selector</h3><p>Bind downloads to Wi-Fi, Ethernet, or VPN. Large downloads on Ethernet, small ones on whatever.</p></div>
+      <div class="nf-card"><div class="nf-badge" style="background:#1e1e2e;color:var(--accent)">Network</div><h3>Auto-pause on metered Wi-Fi</h3><p>Detect personal hotspot or known metered networks. Auto-pause queue. Resume when back on home network.</p></div>
+      <div class="nf-card"><div class="nf-badge" style="background:#2e1e1e;color:var(--yellow)">Automation</div><h3>Watched folder integration</h3><p>Point BDM at a folder. Drop a .url or .txt file in → auto-import and queue the URLs. CI/CD friendly.</p></div>
+      <div class="nf-card"><div class="nf-badge" style="background:#2e1e1e;color:var(--yellow)">Automation</div><h3>Webhooks on events</h3><p>POST to a URL when download completes/fails. JSON payload with filename, size, path, duration. Integrate with Slack, Discord, Home Assistant.</p></div>
+      <div class="nf-card"><div class="nf-badge" style="background:#2e1e1e;color:var(--yellow)">Automation</div><h3>AppleScript / JXA dictionary</h3><p>Full scriptable app with AppleScript dictionary. <code>tell app "BDM" to add url "..." with segments 16</code></p></div>
+      <div class="nf-card"><div class="nf-badge" style="background:#1a2e1a;color:var(--green)">Security</div><h3>TLS cert inspector</h3><p>Detail panel shows cert chain, issuer, expiry. Warns on self-signed or expired. Never silently accepts bad certs.</p></div>
+      <div class="nf-card"><div class="nf-badge" style="background:#1a2e1a;color:var(--green)">Security</div><h3>Quarantine flag management</h3><p>Show Gatekeeper status per file. Option to clear quarantine flag from detail panel (with permission prompt).</p></div>
+      <div class="nf-card"><div class="nf-badge" style="background:#1a2e1a;color:var(--green)">Security</div><h3>Malware scan integration</h3><p>Pass completed downloads to XProtect / custom antivirus via NSWorkspace. Show scan result in detail panel.</p></div>
+      <div class="nf-card"><div class="nf-badge" style="background:#1e2a3a;color:var(--tag-text)">i18n</div><h3>In-app translation editor</h3><p>Power users can edit translations directly in Settings → Language → Edit. Changes saved to user's locale .json. Submit upstream via "Contribute Translation" button.</p></div>
+      <div class="nf-card"><div class="nf-badge" style="background:#1e2a3a;color:var(--tag-text)">i18n</div><h3>Pluralization rules in JSON</h3><p><code>"items_count"</code> key supports <code>{"one": "1 file", "other": "{{n}} files"}</code> nested objects. CLDR plural rules per locale.</p></div>
+      <div class="nf-card"><div class="nf-badge" style="background:#2a1e2e;color:var(--accent2)">UX</div><h3>Widget for macOS Desktop</h3><p>WidgetKit widget showing active downloads with progress. Small, medium, large sizes. Interactive in macOS Sonoma+.</p></div>
+    </div>
+  </section>
+
+  <!-- ═══════════ ANTI-FEATURES ════════════════════════════════════════════ -->
+  <section>
+    <h2>Intentional Non-Features</h2>
+    <div class="callout"><strong>Feature restraint is a feature.</strong> These were considered and deliberately excluded.</div>
+    <div class="anti-list">
+      <div class="anti-tag">BitTorrent / Magnet links</div>
+      <div class="anti-tag">Video grabber / yt-dlp</div>
+      <div class="anti-tag">Built-in media player</div>
+      <div class="anti-tag">Built-in browser</div>
+      <div class="anti-tag">Cloud storage sync</div>
+      <div class="anti-tag">Social sharing</div>
+      <div class="anti-tag">Auto-transcode</div>
+      <div class="anti-tag">FTP file manager</div>
+      <div class="anti-tag">User accounts / login</div>
+      <div class="anti-tag">Ads or upsells</div>
+      <div class="anti-tag">Crash reporter phone-home</div>
+      <div class="anti-tag">Subscription pricing</div>
+      <div class="anti-tag">Windows / Linux port</div>
+    </div>
+  </section>
+
+  <!-- ═══════════ TECH STACK ═══════════════════════════════════════════════ -->
+  <section>
+    <h2>Technology Stack</h2>
+    <div class="stack-grid">
+      <div class="stack-item"><div class="stack-layer">Language</div><div class="stack-name">Swift 6</div><div class="stack-why">Strict concurrency for safe multi-thread engine</div></div>
+      <div class="stack-item"><div class="stack-layer">UI</div><div class="stack-name">SwiftUI + AppKit</div><div class="stack-why">SwiftUI views, AppKit for perf + Quick Look + drag</div></div>
+      <div class="stack-item"><div class="stack-layer">Networking</div><div class="stack-name">URLSession + pwrite()</div><div class="stack-why">Native HTTP/2, per-thread Range requests, direct-write</div></div>
+      <div class="stack-item"><div class="stack-layer">Concurrency</div><div class="stack-name">Actors + TaskGroup</div><div class="stack-why">Segment actor → thread tasks via TaskGroup. Structured.</div></div>
+      <div class="stack-item"><div class="stack-layer">Persistence</div><div class="stack-name">SwiftData + SQLite</div><div class="stack-why">Download state, per-thread offsets, routing rules</div></div>
+      <div class="stack-item"><div class="stack-layer">i18n</div><div class="stack-name">JSON + BDMLocalizer</div><div class="stack-why">No .strings. Drop-in JSON files. {{var}} interpolation.</div></div>
+      <div class="stack-item"><div class="stack-layer">Security</div><div class="stack-name">Keychain + Sandbox</div><div class="stack-why">Headers in Keychain. Minimum entitlements.</div></div>
+      <div class="stack-item"><div class="stack-layer">Distribution</div><div class="stack-name">Direct (Paddle) + MAS</div><div class="stack-why">One-time purchase. bdm-settings.json portable.</div></div>
+    </div>
+  </section>
+
+  <!-- ═══════════ KEYBOARD SHORTCUTS ═══════════════════════════════════════ -->
+  <section>
+    <h2>Keyboard Shortcuts</h2>
+    <div class="kbd-grid">
+      <div class="kbd-row"><span class="kbd-action">Add URLs</span><div class="kbd-keys"><kbd>⌘</kbd><kbd>N</kbd></div></div>
+      <div class="kbd-row"><span class="kbd-action">Paste &amp; add from clipboard</span><div class="kbd-keys"><kbd>⌘</kbd><kbd>V</kbd></div></div>
+      <div class="kbd-row"><span class="kbd-action">Pause / Resume selected</span><div class="kbd-keys"><kbd>Space</kbd></div></div>
+      <div class="kbd-row"><span class="kbd-action">Quick Look preview</span><div class="kbd-keys"><kbd>⌥</kbd><kbd>Space</kbd></div></div>
+      <div class="kbd-row"><span class="kbd-action">Reveal in Finder</span><div class="kbd-keys"><kbd>⌘</kbd><kbd>R</kbd></div></div>
+      <div class="kbd-row"><span class="kbd-action">Copy download URL</span><div class="kbd-keys"><kbd>⌘</kbd><kbd>C</kbd></div></div>
+      <div class="kbd-row"><span class="kbd-action">Copy file path</span><div class="kbd-keys"><kbd>⌘</kbd><kbd>⇧</kbd><kbd>C</kbd></div></div>
+      <div class="kbd-row"><span class="kbd-action">Delete selected</span><div class="kbd-keys"><kbd>⌫</kbd></div></div>
+      <div class="kbd-row"><span class="kbd-action">Detailed view</span><div class="kbd-keys"><kbd>⌘</kbd><kbd>1</kbd></div></div>
+      <div class="kbd-row"><span class="kbd-action">Compact view</span><div class="kbd-keys"><kbd>⌘</kbd><kbd>2</kbd></div></div>
+      <div class="kbd-row"><span class="kbd-action">Minimal view</span><div class="kbd-keys"><kbd>⌘</kbd><kbd>3</kbd></div></div>
+      <div class="kbd-row"><span class="kbd-action">Toggle sidebar</span><div class="kbd-keys"><kbd>⌘</kbd><kbd>⌥</kbd><kbd>S</kbd></div></div>
+      <div class="kbd-row"><span class="kbd-action">Focus search</span><div class="kbd-keys"><kbd>⌘</kbd><kbd>F</kbd></div></div>
+      <div class="kbd-row"><span class="kbd-action">Pause all</span><div class="kbd-keys"><kbd>⌘</kbd><kbd>⌥</kbd><kbd>P</kbd></div></div>
+      <div class="kbd-row"><span class="kbd-action">Resume all</span><div class="kbd-keys"><kbd>⌘</kbd><kbd>⌥</kbd><kbd>R</kbd></div></div>
+      <div class="kbd-row"><span class="kbd-action">Open settings</span><div class="kbd-keys"><kbd>⌘</kbd><kbd>,</kbd></div></div>
+      <div class="kbd-row"><span class="kbd-action">Global show/hide BDM</span><div class="kbd-keys"><kbd>⌥</kbd><kbd>⌘</kbd><kbd>D</kbd></div></div>
+      <div class="kbd-row"><span class="kbd-action">Move priority up/down</span><div class="kbd-keys"><kbd>⌘</kbd><kbd>↑</kbd><kbd>↓</kbd></div></div>
+    </div>
+  </section>
+
+  <!-- ═══════════ ROADMAP ══════════════════════════════════════════════════ -->
+  <section>
+    <h2>Build Roadmap</h2>
+    <div class="timeline">
+      <div class="phase">
+        <div class="phase-dot active"></div>
+        <div class="phase-label">Phase 1 · Engine Core</div>
+        <h3>Multi-Thread Segment Downloader</h3>
+        <p>The heart of BDM. If this isn't fast, nothing else matters.</p>
+        <ul class="task-list">
+          <li>XPC download service: <code>com.amirhpcom.bdm.downloader</code></li>
+          <li>SegmentPlanner: HEAD check → split into N segments</li>
+          <li>ThreadedSegment actor: 2–4 sub-range tasks per segment via TaskGroup</li>
+          <li>Sparse file writer: pre-allocate → pwrite() at byte offset per thread</li>
+          <li>Assembly: verify all ranges complete → SHA-256 → atomic rename()</li>
+          <li>Adaptive rebalancing: 500ms throughput measurement, slow-thread reassign</li>
+          <li>Resume: persist per-thread byte offsets to SwiftData on pause/crash</li>
+          <li>Token bucket bandwidth limiter (global + per-download)</li>
+          <li>Minimal SwiftUI window to test: add URL → watch segments fill</li>
+        </ul>
+      </div>
+      <div class="phase">
+        <div class="phase-dot pending"></div>
+        <div class="phase-label">Phase 2 · UI + View Modes</div>
+        <h3>Three Views, Filtering, Sidebar</h3>
+        <ul class="task-list">
+          <li>Detailed view with segment map, path, speed, ETA</li>
+          <li>Compact view: single-line with progress bar + percent</li>
+          <li>Minimal view: ultra-dense name + mini bar + percent</li>
+          <li>View toggle in titlebar (⌘1/⌘2/⌘3)</li>
+          <li>Filter bar: All / Active / Paused / Done / Failed with count badges</li>
+          <li>Collapsible sidebar (⌘⌥S, icon-only mode)</li>
+          <li>Search (⌘F) + Sort (name, size, speed, date, status)</li>
+          <li>Right-click context menu: Copy URL, Copy Path, Reveal, Quick Look, Re-download, Delete</li>
+          <li>Quick Look via QLPreviewPanel (⌥Space on completed items)</li>
+        </ul>
+      </div>
+      <div class="phase">
+        <div class="phase-dot pending"></div>
+        <div class="phase-label">Phase 3 · Bulk, Routing &amp; Notifications</div>
+        <h3>Multi-URL Input, Smart Folders, Alerts</h3>
+        <ul class="task-list">
+          <li>Bulk Add sheet: parse, dedup, async HEAD, preview with sizes</li>
+          <li>Batch groups: shared folder, group notification</li>
+          <li>Routing rule engine: extension + domain match → folder + segments + threads</li>
+          <li>Per-download folder override</li>
+          <li>Native notifications: complete, batch done, error, checksum mismatch</li>
+          <li>Notification actions: Reveal in Finder, Open File, Retry, Open Folder</li>
+          <li>Duplicate detection before queueing</li>
+        </ul>
+      </div>
+      <div class="phase">
+        <div class="phase-dot pending"></div>
+        <div class="phase-label">Phase 4 · Settings &amp; Localization</div>
+        <h3>Complete Settings + JSON i18n</h3>
+        <ul class="task-list">
+          <li>8-tab settings window (General, Downloads, Folders, Network, Browser, Notifications, Language, Advanced)</li>
+          <li>Export/Import <code>bdm-settings.json</code> with schema validation</li>
+          <li>Reset to defaults with confirmation</li>
+          <li>BDMLocalizer: load <code>en.json</code> from bundle, overlay user locale JSON</li>
+          <li>{{var}} interpolation + pluralization rules</li>
+          <li>RTL auto-detection from <code>_direction</code> key</li>
+          <li>Language picker showing all .json files with completion %</li>
+          <li>Ship with en.json. Community contributes fa, de, es, zh, ja, ko, ar…</li>
+        </ul>
+      </div>
+      <div class="phase">
+        <div class="phase-dot pending"></div>
+        <div class="phase-label">Phase 5 · Browser &amp; macOS Integration</div>
+        <h3>Browser Bridge + Native Platform</h3>
+        <ul class="task-list">
+          <li>Native messaging host (launchd, JSON socket)</li>
+          <li>Safari Web Extension + Chrome/Firefox MV3 extension</li>
+          <li>Menu bar status item: progress ring, speed graph popover</li>
+          <li>Apple Shortcuts (AppIntents framework)</li>
+          <li>URL scheme: <code>bdm://add?url=&amp;save=&amp;seg=&amp;threads=</code></li>
+          <li>Drag &amp; drop URLs / .txt onto window and Dock icon</li>
+          <li>Clipboard watcher HUD (opt-in)</li>
+          <li>Battery throttle + schedule via launchd</li>
+        </ul>
+      </div>
+      <div class="phase">
+        <div class="phase-dot pending"></div>
+        <div class="phase-label">Phase 6 · Security, Polish &amp; Ship</div>
+        <h3>Ship BDM v1.0</h3>
+        <ul class="task-list">
+          <li>App Sandbox audit: minimum entitlements</li>
+          <li>Hardened Runtime + Notarization (Fastlane pipeline)</li>
+          <li>Full keyboard navigation + VoiceOver audit</li>
+          <li>Onboarding: grant folder access, install browser extensions</li>
+          <li>Per-domain concurrency limits</li>
+          <li>Custom headers / HTTP Auth → Keychain</li>
+          <li>Auto-match SHA256SUMS in batches</li>
+          <li>Final performance profiling: Instruments trace on 32-seg × 4-thread</li>
+        </ul>
+      </div>
+      <div class="phase">
+        <div class="phase-dot pending"></div>
+        <div class="phase-label">Phase 7 · v1.1 Power Layer</div>
+        <h3>CLI, Automation, Widgets</h3>
+        <ul class="task-list">
+          <li><code>bdmctl</code> CLI companion (ArgumentParser, JSON output)</li>
+          <li>URL pattern expander [1-N]</li>
+          <li>Post-download actions (unzip, mount, run script)</li>
+          <li>Webhooks on events (POST JSON to URL)</li>
+          <li>AppleScript / JXA dictionary</li>
+          <li>WidgetKit desktop widget</li>
+          <li>Spotlight search integration</li>
+          <li>macOS file tags on complete</li>
+          <li>In-app translation editor</li>
+          <li>Mirror / fallback URLs</li>
+          <li>Cookie import from browser</li>
+          <li>Proxy + network interface selector</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ UX RULES ═════════════════════════════════════════════════ -->
+  <section>
+    <h2>UI/UX Rules (Non-Negotiable)</h2>
+    <table class="feature-table">
+      <thead><tr><th style="width:45%">Rule</th><th>Why</th></tr></thead>
+      <tbody>
+        <tr><td>Never show a modal for a download that starts fine</td><td>Silent capture is the point. Interrupt only on ambiguity.</td></tr>
+        <tr><td>Notify on every completed download (unless user disables)</td><td>Feedback loop. User should never have to check manually.</td></tr>
+        <tr><td>View mode toggle visible at all times in titlebar</td><td>Switching views should be instant and discoverable.</td></tr>
+        <tr><td>All 3 views support right-click context menu with full actions</td><td>View mode affects density, never capability.</td></tr>
+        <tr><td>Segment × thread count shown only in Detailed view</td><td>Compact/Minimal users don't want engine details.</td></tr>
+        <tr><td>Speed shown in MB/s, not KB/s or Mbps</td><td>Developer mental model. Match Activity Monitor.</td></tr>
+        <tr><td>ETA always prefixed with "~"</td><td>Bad ETAs are worse than no ETAs.</td></tr>
+        <tr><td>Settings export includes EVERYTHING</td><td>One file = one config. No "oops I forgot to export routing rules".</td></tr>
+        <tr><td>Missing translation key → show English, never blank</td><td>Partial translations must still work. No broken UI.</td></tr>
+        <tr><td>RTL layout applies to entire app, not just strings</td><td>Sidebar moves right, progress fills right-to-left, etc.</td></tr>
+        <tr><td>Default save: ~/Downloads. Never change silently.</td><td>Principle of least surprise.</td></tr>
+        <tr><td>Partial file extension: .bdm-partial</td><td>Makes BDM files identifiable. Cleaned up on complete.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ═══════════ BUSINESS ═════════════════════════════════════════════════ -->
+  <section>
+    <h2>Business Model</h2>
+    <div class="callout"><strong>One-time purchase · ~$14.99</strong> — No subscription. Full multi-thread engine, all view modes, all languages from day one. 14-day free trial. Direct (Paddle) + Mac App Store.</div>
+    <div class="callout"><strong>Localization = community growth.</strong> Every translated JSON file expands the market at zero cost. Translators get a credit in the About window and a free license.</div>
+  </section>
+
+  <footer>
+    <span>BlackSwan Download Manager (BDM) · Product Plan · v0.3</span>
+    <span>Executable: <code style="font-family:'SF Mono',monospace;font-size:11px;background:#1e1e24;padding:1px 5px;border-radius:3px;color:#7ab3f5">bdm</code> · March 2026</span>
+  </footer>
+
+</div>
+</body>
+</html>
