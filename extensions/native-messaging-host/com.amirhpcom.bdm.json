@@ -1,0 +1,9 @@
+{
+  "name": "com.amirhpcom.bdm",
+  "description": "BDM (Blazing Download Manager) native messaging host for Chrome",
+  "path": "/Applications/BDM.app/Contents/Resources/bdm-native-host",
+  "type": "stdio",
+  "allowed_origins": [
+    "chrome-extension://EXTENSION_ID_PLACEHOLDER/"
+  ]
+}
