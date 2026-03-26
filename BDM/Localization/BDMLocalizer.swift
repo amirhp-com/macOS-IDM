@@ -25,6 +25,7 @@ final class BDMLocalizer {
     }
 
     /// Load a user locale, overlaying on top of English fallback.
+    /// Checks the app bundle first, then ~/Library/Application Support/BDM/Locales/.
     func load(locale: String) {
         currentLocale = locale
 
@@ -34,11 +35,20 @@ final class BDMLocalizer {
             return
         }
 
-        let appSupport = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first
-        let localeURL = appSupport?
-            .appendingPathComponent("BDM/Locales/\(locale).json")
+        // First, check the app bundle for the locale file
+        var resolvedURL: URL?
+        if let bundleURL = Bundle.main.url(forResource: locale, withExtension: "json") {
+            resolvedURL = bundleURL
+        }
 
-        guard let url = localeURL,
+        // Then, check Application Support (user overrides take priority)
+        let appSupport = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first
+        if let appSupportURL = appSupport?.appendingPathComponent("BDM/Locales/\(locale).json"),
+           FileManager.default.fileExists(atPath: appSupportURL.path) {
+            resolvedURL = appSupportURL
+        }
+
+        guard let url = resolvedURL,
               let data = try? Data(contentsOf: url),
               let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
             print("[BDM] Could not load locale \(locale), staying on English")
@@ -91,22 +101,48 @@ final class BDMLocalizer {
     }
 
     /// List all available locale files.
+    /// Scans both the app bundle and ~/Library/Application Support/BDM/Locales/.
     func availableLocales() -> [(code: String, name: String, completion: Double)] {
         var locales: [(code: String, name: String, completion: Double)] = [
             ("en", "English", 1.0)
         ]
+        var seenCodes: Set<String> = ["en"]
 
+        // Collect locale JSON files from both bundle and Application Support
+        var localeFiles: [(code: String, url: URL)] = []
+
+        // 1. Scan the app bundle for locale JSON files
+        if let bundleResourcePath = Bundle.main.resourceURL {
+            if let bundleFiles = try? FileManager.default.contentsOfDirectory(
+                at: bundleResourcePath, includingPropertiesForKeys: nil
+            ) {
+                for file in bundleFiles where file.pathExtension == "json" {
+                    let code = file.deletingPathExtension().lastPathComponent
+                    if code == "en" { continue }
+                    localeFiles.append((code, file))
+                }
+            }
+        }
+
+        // 2. Scan Application Support (overrides bundle if same code exists)
         let appSupport = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first
         let localesDir = appSupport?.appendingPathComponent("BDM/Locales")
 
-        guard let dir = localesDir,
-              let files = try? FileManager.default.contentsOfDirectory(at: dir, includingPropertiesForKeys: nil) else {
-            return locales
+        if let dir = localesDir,
+           let files = try? FileManager.default.contentsOfDirectory(at: dir, includingPropertiesForKeys: nil) {
+            for file in files where file.pathExtension == "json" {
+                let code = file.deletingPathExtension().lastPathComponent
+                if code == "en" { continue }
+                // Application Support overrides bundle — remove earlier bundle entry
+                localeFiles.removeAll { $0.code == code }
+                localeFiles.append((code, file))
+            }
         }
 
-        for file in files where file.pathExtension == "json" {
-            let code = file.deletingPathExtension().lastPathComponent
-            if code == "en" { continue }
+        // 3. Build locale entries
+        for (code, file) in localeFiles {
+            guard !seenCodes.contains(code) else { continue }
+            seenCodes.insert(code)
 
             if let data = try? Data(contentsOf: file),
                let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
