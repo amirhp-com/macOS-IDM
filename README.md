@@ -1,5 +1,9 @@
 # BlackSwan Download Manager (BDM)
 
+<p align="center">
+  <img src="logo.png" width="128" height="128" alt="BDM Logo">
+</p>
+
 A native macOS download manager that splits files into segments, downloads each segment with multiple threads in parallel, and reassembles them at full speed.
 
 No ads. No bloat. No Electron. Just speed.
@@ -106,6 +110,18 @@ URL → HEAD check → Segment Planner → N Segments × M Threads
 | Localization | JSON + BDMLocalizer |
 | Distribution | Direct (DMG) |
 
+## Browser Extensions
+
+Capture downloads from your browser directly into BDM:
+
+| Browser | Repository |
+|---------|-----------|
+| Chrome | [BDM-Chrome-Extension](https://github.com/amirhp-com/BDM-Chrome-Extension) |
+| Firefox | [BDM-Firefox-Extension](https://github.com/amirhp-com/BDM-Firefox-Extension) |
+| Safari | [BDM-Safari-Extension](https://github.com/amirhp-com/BDM-Safari-Extension) |
+
+Extensions communicate with BDM via native messaging. See each repo for installation instructions.
+
 ## Contributing
 
 ### Translations
@@ -117,6 +133,8 @@ BDM uses JSON-based localization. To add a language:
 3. Rename to your language code (e.g., `fr.json`, `de.json`, `ja.json`)
 4. Translate the values (never the keys)
 5. Submit a PR
+
+Currently available: English, فارسی (Persian/Farsi)
 
 Partial translations are welcome — untranslated keys show English.
 
