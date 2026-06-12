@@ -55,6 +55,7 @@
 		A10001000001000100010030 /* FinishTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10001000001000100010037 /* FinishTask.swift */; };
 		A10001000001000100010031 /* EditDownloadSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10001000001000100010038 /* EditDownloadSheet.swift */; };
 		A10001000001000100010032 /* MiniProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10001000001000100010039 /* MiniProgressView.swift */; };
+		A10001000001000100010033 /* FTPSegmentDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000100000100010001003A /* FTPSegmentDownloader.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -134,6 +135,7 @@
 		B10001000001000100010037 /* FinishTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinishTask.swift; sourceTree = "<group>"; };
 		B10001000001000100010038 /* EditDownloadSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditDownloadSheet.swift; sourceTree = "<group>"; };
 		B10001000001000100010039 /* MiniProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MiniProgressView.swift; sourceTree = "<group>"; };
+		B1000100000100010001003A /* FTPSegmentDownloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FTPSegmentDownloader.swift; sourceTree = "<group>"; };
 		B10001000001000100010022 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B10001000001000100010023 /* BDMDownloader.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BDMDownloader.entitlements; sourceTree = "<group>"; };
 		C20001000001000100010001 /* BDM.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BDM.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -359,6 +361,7 @@
 				B1000100000100010001001A /* DownloadEngine.swift */,
 				B1000100000100010001001B /* SegmentPlanner.swift */,
 				B1000100000100010001001C /* SegmentDownloader.swift */,
+				B1000100000100010001003A /* FTPSegmentDownloader.swift */,
 				B1000100000100010001001D /* SparseFileWriter.swift */,
 				B1000100000100010001001E /* BandwidthLimiter.swift */,
 				B1000100000100010001001F /* ChecksumVerifier.swift */,
@@ -548,6 +551,7 @@
 				A10001000001000100010022 /* DownloadEngine.swift in Sources */,
 				A10001000001000100010023 /* SegmentPlanner.swift in Sources */,
 				A10001000001000100010024 /* SegmentDownloader.swift in Sources */,
+				A10001000001000100010033 /* FTPSegmentDownloader.swift in Sources */,
 				A10001000001000100010025 /* SparseFileWriter.swift in Sources */,
 				A10001000001000100010026 /* BandwidthLimiter.swift in Sources */,
 				A10001000001000100010027 /* ChecksumVerifier.swift in Sources */,

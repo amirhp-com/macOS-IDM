@@ -59,7 +59,11 @@ actor DownloadEngine {
         let destinationPath: String
         let segmentCount: Int
         let threadsPerSegment: Int
-        let authorization: String?
+        let username: String?
+        let password: String?
+
+        var isFTP: Bool { url.scheme?.lowercased() == "ftp" }
+        var authorization: String? { HTTPAuth.basicHeader(username: username, password: password) }
     }
 
     struct ActiveDownload {
@@ -69,7 +73,7 @@ actor DownloadEngine {
         let partialPath: String
         let statePath: String
         let fileWriter: SparseFileWriter
-        let segmentDownloaders: [SegmentDownloader]
+        let segmentDownloaders: [any SegmentDownloading]
         let segments: [SegmentPlan]
         let task: Task<Void, Error>
         let stateSaver: Task<Void, Never>
@@ -88,7 +92,8 @@ actor DownloadEngine {
         destinationPath: String,
         segmentCount: Int,
         threadsPerSegment: Int,
-        authorization: String? = nil
+        username: String? = nil,
+        password: String? = nil
     ) async {
         guard activeDownloads[id] == nil, !queue.contains(where: { $0.id == id }) else { return }
         let queued = QueuedDownload(
@@ -97,7 +102,8 @@ actor DownloadEngine {
             destinationPath: destinationPath,
             segmentCount: segmentCount,
             threadsPerSegment: threadsPerSegment,
-            authorization: authorization
+            username: username,
+            password: password
         )
         queue.append(queued)
         await processQueue()
@@ -180,7 +186,24 @@ actor DownloadEngine {
     private func startDownload(_ queued: QueuedDownload) async {
         do {
             let planner = SegmentPlanner()
-            let headResult = try await planner.headCheck(url: queued.url, authorization: queued.authorization)
+
+            // Determine size and resumability per protocol
+            let totalBytes: Int64
+            let supportsResume: Bool
+            if queued.isFTP {
+                let client = FTPClient(host: queued.url.host ?? "", port: UInt16(queued.url.port ?? 21))
+                try await client.connect(
+                    username: queued.url.user ?? queued.username ?? "anonymous",
+                    password: queued.url.password ?? queued.password ?? "bdm@example.com"
+                )
+                totalBytes = try await client.size(of: queued.url.path)
+                await client.disconnect()
+                supportsResume = true // REST
+            } else {
+                let headResult = try await planner.headCheck(url: queued.url, authorization: queued.authorization)
+                totalBytes = headResult.totalBytes
+                supportsResume = headResult.supportsRanges
+            }
 
             let partialPath = queued.destinationPath + ".bdm-partial"
             let statePath = queued.destinationPath + ".bdm-state"
@@ -189,34 +212,41 @@ actor DownloadEngine {
             var resumedProgress: [Int: [Int: Int64]] = [:]
 
             // Resume if a matching partial + state pair exists
-            if headResult.supportsRanges,
+            if supportsResume,
                FileManager.default.fileExists(atPath: partialPath),
                let data = FileManager.default.contents(atPath: statePath),
                let state = try? JSONDecoder().decode(DownloadResumeState.self, from: data),
                state.url == queued.url.absoluteString,
-               state.totalBytes == headResult.totalBytes {
+               state.totalBytes == totalBytes {
                 segments = state.segments
                 resumedProgress = state.threadProgress
-            } else if headResult.supportsRanges {
+            } else if queued.isFTP || !supportsResume {
+                // FTP: one connection. HTTP without ranges: one segment/thread.
+                segments = planner.plan(totalBytes: totalBytes, segmentCount: 1, threadsPerSegment: 1)
+            } else {
                 segments = planner.plan(
-                    totalBytes: headResult.totalBytes,
+                    totalBytes: totalBytes,
                     segmentCount: queued.segmentCount,
                     threadsPerSegment: queued.threadsPerSegment
                 )
-            } else {
-                // No range support: single segment, single thread, no resume
-                segments = planner.plan(
-                    totalBytes: headResult.totalBytes,
-                    segmentCount: 1,
-                    threadsPerSegment: 1
-                )
             }
 
-            let fileWriter = try SparseFileWriter(path: partialPath, totalBytes: headResult.totalBytes)
+            let fileWriter = try SparseFileWriter(path: partialPath, totalBytes: totalBytes)
             let hostGate = gate(for: queued.url)
 
-            let segmentDownloaders = segments.map { seg in
-                SegmentDownloader(
+            let segmentDownloaders: [any SegmentDownloading] = segments.map { seg in
+                if queued.isFTP {
+                    return FTPSegmentDownloader(
+                        segment: seg,
+                        url: queued.url,
+                        fileWriter: fileWriter,
+                        bandwidthLimiter: bandwidthLimiter,
+                        username: queued.username,
+                        password: queued.password,
+                        resumedProgress: resumedProgress[seg.index] ?? [:]
+                    )
+                }
+                return SegmentDownloader(
                     segment: seg,
                     url: queued.url,
                     fileWriter: fileWriter,
@@ -273,7 +303,7 @@ actor DownloadEngine {
                 segments: segments,
                 task: task,
                 stateSaver: stateSaver,
-                totalBytes: headResult.totalBytes
+                totalBytes: totalBytes
             )
         } catch {
             // HEAD check or file allocation failed

@@ -129,7 +129,7 @@ Capture downloads from your browser directly into BDM:
 | Firefox | [BDM-Firefox-Extension](https://github.com/amirhp-com/BDM-Firefox-Extension) |
 | Safari | [BDM-Safari-Extension](https://github.com/amirhp-com/BDM-Safari-Extension) |
 
-Extensions communicate with BDM via native messaging. See each repo for installation instructions.
+Extensions communicate with BDM via native messaging (Safari uses a host app instead). Each repo is self-contained — the Chrome and Firefox repos ship the native messaging host manifests and installer. See each repo for installation instructions.
 
 ## Contributing
 

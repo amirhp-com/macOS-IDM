@@ -53,7 +53,6 @@ final class DownloaderService: NSObject, NSXPCListenerDelegate, BDMDownloaderPro
             return
         }
 
-        let authorization = HTTPAuth.basicHeader(username: username, password: password)
         let box = ReplyBox(reply)
         Task {
             await engine.addDownload(
@@ -62,7 +61,8 @@ final class DownloaderService: NSObject, NSXPCListenerDelegate, BDMDownloaderPro
                 destinationPath: destination,
                 segmentCount: segments,
                 threadsPerSegment: threadsPerSegment,
-                authorization: authorization
+                username: username,
+                password: password
             )
             box.value(true, nil)
         }
