@@ -14,23 +14,39 @@ No ads. No bloat. No Electron. Just speed.
 - Files split into 2-32 segments, each downloaded by 2-4 threads
 - Up to 64 parallel streams per file (16 segments x 4 threads)
 - Zero-copy assembly via sparse file + `pwrite()` at byte offset
-- Adaptive rebalancing: slow threads cancelled and reassigned every 500ms
+- True pause/resume — per-thread progress persisted, transfers continue where they stopped
+- Per-domain connection limit, global + battery-aware bandwidth limiter
+- HTTP Basic auth per download for protected sources
 
-**3 View Modes**
-- **Detailed** — full info, segment map, path, speed, ETA
+**5 View Modes**
+- **Detailed** — full info, segment map, path, speed
 - **Compact** — name + progress bar + percent + speed (single line)
 - **Minimal** — ultra-dense, ~30 items visible without scroll
+- **Grid** — card tiles with live progress
+- **Table** — sortable multi-column layout
+
+**Pop-Out Mini Widget**
+- Chromeless floating capsule with animated gradient progress ring
+- Live speed, downloaded and remaining bytes; draggable anywhere
+- Follows every Space, visible over fullscreen apps (`⇧⌘M` or `bdm://mini`)
+
+**Finish Tasks**
+- Orderable action chains per download: play sound, open file, launch app,
+  run script, wait, turn off Wi-Fi, quit BDM, shut down the Mac
+- User scripts run outside the sandbox from `~/Library/Application Scripts/com.amirhpcom.bdm/`
 
 **macOS Native**
 - Built with SwiftUI + Swift 6 strict concurrency
-- Liquid Glass UI (macOS 26 Tahoe) with optional solid background
-- Quick Look, Shortcuts, native notifications with actions
-- XPC download service keeps downloading when app window is closed
-- `bdm://` URL scheme for automation
+- Liquid Glass UI (macOS 26 Tahoe) with optional solid background, light/dark/auto
+- Quick Look, native notifications, live status bar, menu bar extra
+- Single window, single instance — by design
+- XPC download service keeps downloading when the window is closed
+- `bdm://` URL scheme for automation; paste links to prefill the Add sheet
+- Show the app icon in the Dock, the menu bar, or both
 
 **Smart File Routing**
 - Auto-route downloads by file extension or domain
-- Drag-to-reorder rules, first match wins
+- Editable rules with folder and segment overrides, first match wins
 - Per-download folder override
 
 **JSON Localization**
@@ -50,7 +66,7 @@ No ads. No bloat. No Electron. Just speed.
 
 ## Installation
 
-1. Download `BDM-1.0.0.dmg` from [Releases](../../releases)
+1. Download `BDM-1.2.0.dmg` from [Releases](../../releases)
 2. Open the DMG
 3. Drag **BlackSwan Download Manager** to Applications
 4. Launch from Applications or Spotlight
@@ -86,15 +102,8 @@ URL → HEAD check → Segment Planner → N Segments × M Threads
 | Action | Shortcut |
 |--------|----------|
 | Add URLs | `⌘N` |
-| Paste & add | `⌘V` |
-| Pause/Resume | `Space` |
-| Quick Look | `⌥Space` |
-| Reveal in Finder | `⌘R` |
-| Copy URL | `⌘C` |
-| Copy path | `⌘⇧C` |
-| Detailed view | `⌘1` |
-| Compact view | `⌘2` |
-| Minimal view | `⌘3` |
+| Pop out mini widget | `⌘⇧M` |
+| Toggle preview panel | `⌘⌥P` |
 | Toggle sidebar | `⌘⌥S` |
 | Settings | `⌘,` |
 

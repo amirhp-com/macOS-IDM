@@ -25,17 +25,35 @@ final class DownloaderService: NSObject, NSXPCListenerDelegate, BDMDownloaderPro
 
         self.clientConnection = newConnection
         newConnection.resume()
+
+        // Push engine completion/failure events to the connected app
+        Task { [weak self] in
+            await self?.engine.setEventHandler { [weak self] event in
+                self?.forward(event)
+            }
+        }
         return true
+    }
+
+    private func forward(_ event: EngineEvent) {
+        guard let client = clientConnection?.remoteObjectProxy as? BDMDownloaderClientProtocol else { return }
+        switch event {
+        case .completed(let id, let path):
+            client.downloadCompleted(id: id.uuidString, filePath: path)
+        case .failed(let id, let error):
+            client.downloadFailed(id: id.uuidString, error: error)
+        }
     }
 
     // MARK: - BDMDownloaderProtocol
 
-    func startDownload(id: String, url: String, destination: String, segments: Int, threadsPerSegment: Int, reply: @escaping (Bool, String?) -> Void) {
+    func startDownload(id: String, url: String, destination: String, segments: Int, threadsPerSegment: Int, username: String?, password: String?, reply: @escaping (Bool, String?) -> Void) {
         guard let downloadId = UUID(uuidString: id), let downloadURL = URL(string: url) else {
             reply(false, "Invalid ID or URL")
             return
         }
 
+        let authorization = HTTPAuth.basicHeader(username: username, password: password)
         let box = ReplyBox(reply)
         Task {
             await engine.addDownload(
@@ -43,7 +61,8 @@ final class DownloaderService: NSObject, NSXPCListenerDelegate, BDMDownloaderPro
                 url: downloadURL,
                 destinationPath: destination,
                 segmentCount: segments,
-                threadsPerSegment: threadsPerSegment
+                threadsPerSegment: threadsPerSegment,
+                authorization: authorization
             )
             box.value(true, nil)
         }
@@ -101,6 +120,22 @@ final class DownloaderService: NSObject, NSXPCListenerDelegate, BDMDownloaderPro
         let box = ReplyBox(reply)
         Task {
             await engine.setSpeedLimit(bytesPerSecond: bytesPerSecond)
+            box.value()
+        }
+    }
+
+    func setMaxConcurrentDownloads(_ count: Int, reply: @escaping () -> Void) {
+        let box = ReplyBox(reply)
+        Task {
+            await engine.setMaxConcurrent(count)
+            box.value()
+        }
+    }
+
+    func setPerDomainConnectionLimit(_ limit: Int, reply: @escaping () -> Void) {
+        let box = ReplyBox(reply)
+        Task {
+            await engine.setPerDomainLimit(limit)
             box.value()
         }
     }

@@ -8,6 +8,8 @@ import Foundation
         destination: String,
         segments: Int,
         threadsPerSegment: Int,
+        username: String?,
+        password: String?,
         reply: @escaping (Bool, String?) -> Void
     )
 
@@ -16,7 +18,19 @@ import Foundation
     func cancelDownload(id: String, deleteFile: Bool, reply: @escaping (Bool) -> Void)
     func getProgress(id: String, reply: @escaping (Data?) -> Void)
     func setGlobalSpeedLimit(bytesPerSecond: Int64, reply: @escaping () -> Void)
+    func setMaxConcurrentDownloads(_ count: Int, reply: @escaping () -> Void)
+    func setPerDomainConnectionLimit(_ limit: Int, reply: @escaping () -> Void)
     func headCheck(url: String, reply: @escaping (Data?) -> Void)
+}
+
+/// Builds the Authorization header value for optional HTTP Basic credentials.
+public enum HTTPAuth {
+    public static func basicHeader(username: String?, password: String?) -> String? {
+        guard let username, !username.isEmpty else { return nil }
+        let raw = "\(username):\(password ?? "")"
+        guard let data = raw.data(using: .utf8) else { return nil }
+        return "Basic " + data.base64EncodedString()
+    }
 }
 
 /// XPC protocol: download service → app (progress callbacks)

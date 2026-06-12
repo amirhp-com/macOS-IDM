@@ -4,6 +4,9 @@ struct DetailedRowView: View {
     let download: DownloadItem
     let isSelected: Bool
 
+    @Environment(DownloadManager.self) private var downloadManager
+    @Environment(BDMLocalizer.self) private var loc
+
     var body: some View {
         HStack(alignment: .top, spacing: 10) {
             // Status dot
@@ -24,12 +27,12 @@ struct DetailedRowView: View {
 
                 Text(subtitle)
                     .font(.caption)
-                    .foregroundStyle(BDMColors.muted)
+                    .foregroundStyle(.secondary)
                     .lineLimit(1)
 
                 Text(download.destinationPath)
                     .font(.system(.caption2, design: .monospaced))
-                    .foregroundStyle(BDMColors.muted2)
+                    .foregroundStyle(.tertiary)
                     .lineLimit(1)
 
                 // Segment visualization
@@ -52,7 +55,7 @@ struct DetailedRowView: View {
 
                 Text(sizeText)
                     .font(.caption2)
-                    .foregroundStyle(BDMColors.muted2)
+                    .foregroundStyle(.tertiary)
             }
         }
         .padding(.horizontal, 12)
@@ -87,11 +90,11 @@ struct DetailedRowView: View {
 
     private var speedText: String {
         switch download.downloadStatus {
-        case .active: return "↓ --" // Updated by progress polling
-        case .completed: return "Complete"
-        case .failed: return "Failed"
-        case .paused: return "Paused"
-        case .queued: return "Queued"
+        case .active: return "↓ \(downloadManager.formattedSpeed(for: download.id) ?? "--")"
+        case .completed: return loc.t("status.completed")
+        case .failed: return loc.t("status.failed")
+        case .paused: return loc.t("status.paused")
+        case .queued: return loc.t("status.queued")
         }
     }
 

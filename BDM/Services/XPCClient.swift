@@ -7,11 +7,15 @@ final class XPCClient: @unchecked Sendable {
     private var connection: NSXPCConnection?
     private(set) var isConnected = false
 
+    /// Service → app event callbacks. Set before calling connect().
+    var onCompleted: (@Sendable (_ id: String, _ filePath: String) -> Void)?
+    var onFailed: (@Sendable (_ id: String, _ error: String) -> Void)?
+
     func connect() {
         let conn = NSXPCConnection(serviceName: "com.amirhpcom.bdm.downloader")
         conn.remoteObjectInterface = NSXPCInterface(with: BDMDownloaderProtocol.self)
         conn.exportedInterface = NSXPCInterface(with: BDMDownloaderClientProtocol.self)
-        conn.exportedObject = XPCClientDelegate()
+        conn.exportedObject = XPCClientDelegate(onCompleted: onCompleted, onFailed: onFailed)
 
         conn.invalidationHandler = { [weak self] in
             self?.isConnected = false
@@ -33,15 +37,21 @@ final class XPCClient: @unchecked Sendable {
         isConnected = false
     }
 
+    /// Resolves the remote proxy, reconnecting if the connection was dropped.
     private var proxy: BDMDownloaderProtocol? {
-        connection?.remoteObjectProxyWithErrorHandler { error in
+        if connection == nil { connect() }
+        return connection?.remoteObjectProxyWithErrorHandler { error in
             print("[BDM] XPC error: \(error)")
         } as? BDMDownloaderProtocol
     }
 
-    func startDownload(id: UUID, url: String, destination: String, segments: Int, threadsPerSegment: Int) async -> Bool {
+    func startDownload(id: UUID, url: String, destination: String, segments: Int, threadsPerSegment: Int, username: String? = nil, password: String? = nil) async -> Bool {
         await withCheckedContinuation { continuation in
-            proxy?.startDownload(id: id.uuidString, url: url, destination: destination, segments: segments, threadsPerSegment: threadsPerSegment) { success, error in
+            guard let proxy else {
+                continuation.resume(returning: false)
+                return
+            }
+            proxy.startDownload(id: id.uuidString, url: url, destination: destination, segments: segments, threadsPerSegment: threadsPerSegment, username: username, password: password) { success, error in
                 if let error { print("[BDM] Start failed: \(error)") }
                 continuation.resume(returning: success)
             }
@@ -50,7 +60,11 @@ final class XPCClient: @unchecked Sendable {
 
     func pauseDownload(id: UUID) async -> Bool {
         await withCheckedContinuation { continuation in
-            proxy?.pauseDownload(id: id.uuidString) { success in
+            guard let proxy else {
+                continuation.resume(returning: false)
+                return
+            }
+            proxy.pauseDownload(id: id.uuidString) { success in
                 continuation.resume(returning: success)
             }
         }
@@ -58,7 +72,11 @@ final class XPCClient: @unchecked Sendable {
 
     func cancelDownload(id: UUID, deleteFile: Bool) async -> Bool {
         await withCheckedContinuation { continuation in
-            proxy?.cancelDownload(id: id.uuidString, deleteFile: deleteFile) { success in
+            guard let proxy else {
+                continuation.resume(returning: false)
+                return
+            }
+            proxy.cancelDownload(id: id.uuidString, deleteFile: deleteFile) { success in
                 continuation.resume(returning: success)
             }
         }
@@ -66,7 +84,11 @@ final class XPCClient: @unchecked Sendable {
 
     func getProgress(id: UUID) async -> DownloadProgress? {
         await withCheckedContinuation { continuation in
-            proxy?.getProgress(id: id.uuidString) { data in
+            guard let proxy else {
+                continuation.resume(returning: nil)
+                return
+            }
+            proxy.getProgress(id: id.uuidString) { data in
                 guard let data else {
                     continuation.resume(returning: nil)
                     return
@@ -79,7 +101,11 @@ final class XPCClient: @unchecked Sendable {
 
     func headCheck(url: String) async -> HeadCheckResult? {
         await withCheckedContinuation { continuation in
-            proxy?.headCheck(url: url) { data in
+            guard let proxy else {
+                continuation.resume(returning: nil)
+                return
+            }
+            proxy.headCheck(url: url) { data in
                 guard let data else {
                     continuation.resume(returning: nil)
                     return
@@ -92,7 +118,35 @@ final class XPCClient: @unchecked Sendable {
 
     func setSpeedLimit(bytesPerSecond: Int64) async {
         await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
-            proxy?.setGlobalSpeedLimit(bytesPerSecond: bytesPerSecond) {
+            guard let proxy else {
+                continuation.resume()
+                return
+            }
+            proxy.setGlobalSpeedLimit(bytesPerSecond: bytesPerSecond) {
+                continuation.resume()
+            }
+        }
+    }
+
+    func setMaxConcurrentDownloads(_ count: Int) async {
+        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+            guard let proxy else {
+                continuation.resume()
+                return
+            }
+            proxy.setMaxConcurrentDownloads(count) {
+                continuation.resume()
+            }
+        }
+    }
+
+    func setPerDomainConnectionLimit(_ limit: Int) async {
+        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+            guard let proxy else {
+                continuation.resume()
+                return
+            }
+            proxy.setPerDomainConnectionLimit(limit) {
                 continuation.resume()
             }
         }
@@ -101,17 +155,23 @@ final class XPCClient: @unchecked Sendable {
 
 /// Handles callbacks from XPC service → app.
 final class XPCClientDelegate: NSObject, BDMDownloaderClientProtocol, @unchecked Sendable {
+    private let onCompleted: (@Sendable (String, String) -> Void)?
+    private let onFailed: (@Sendable (String, String) -> Void)?
+
+    init(onCompleted: (@Sendable (String, String) -> Void)?, onFailed: (@Sendable (String, String) -> Void)?) {
+        self.onCompleted = onCompleted
+        self.onFailed = onFailed
+    }
+
     func progressUpdate(_ data: Data) {
-        guard let progress = try? JSONDecoder().decode(DownloadProgress.self, from: data) else { return }
-        // TODO: Post notification to update UI
-        _ = progress
+        // Progress is polled by DownloadManager; push updates unused for now.
     }
 
     func downloadCompleted(id: String, filePath: String) {
-        // TODO: Update SwiftData model, post notification
+        onCompleted?(id, filePath)
     }
 
     func downloadFailed(id: String, error: String) {
-        // TODO: Update SwiftData model, post notification
+        onFailed?(id, error)
     }
 }

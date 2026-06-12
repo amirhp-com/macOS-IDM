@@ -4,6 +4,9 @@ struct CompactRowView: View {
     let download: DownloadItem
     let isSelected: Bool
 
+    @Environment(DownloadManager.self) private var downloadManager
+    @Environment(BDMLocalizer.self) private var loc
+
     var body: some View {
         HStack(spacing: 10) {
             // Status dot
@@ -55,11 +58,11 @@ struct CompactRowView: View {
 
     private var speedText: String {
         switch download.downloadStatus {
-        case .active: return "-- MB/s"
-        case .completed: return "Done"
-        case .failed: return "Retry…"
-        case .paused: return "Paused"
-        case .queued: return "Queued"
+        case .active: return downloadManager.formattedSpeed(for: download.id) ?? "--"
+        case .completed: return loc.t("filter.done")
+        case .failed: return loc.t("status.failed")
+        case .paused: return loc.t("status.paused")
+        case .queued: return loc.t("status.queued")
         }
     }
 

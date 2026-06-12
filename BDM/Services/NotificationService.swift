@@ -7,6 +7,11 @@ final class NotificationService: @unchecked Sendable {
 
     private init() {}
 
+    /// Notification sound respects Settings → Notifications → Sound.
+    private var soundEnabled: Bool {
+        UserDefaults.standard.object(forKey: "bdm.notif.sound") as? Bool ?? true
+    }
+
     func requestPermission() {
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
             if let error {
@@ -20,7 +25,7 @@ final class NotificationService: @unchecked Sendable {
         let content = UNMutableNotificationContent()
         content.title = "\(fileName) — Complete"
         content.body = "\(size) downloaded in \(duration)"
-        content.sound = .default
+        content.sound = soundEnabled ? .default : nil
         content.categoryIdentifier = "DOWNLOAD_COMPLETE"
         content.userInfo = ["filePath": filePath]
 
@@ -37,7 +42,7 @@ final class NotificationService: @unchecked Sendable {
         let content = UNMutableNotificationContent()
         content.title = "Batch \"\(batchName)\" — All \(fileCount) files done"
         content.body = "\(totalSize) total · Saved to \(folder)"
-        content.sound = .default
+        content.sound = soundEnabled ? .default : nil
         content.categoryIdentifier = "BATCH_COMPLETE"
 
         let request = UNNotificationRequest(
@@ -53,8 +58,38 @@ final class NotificationService: @unchecked Sendable {
         let content = UNMutableNotificationContent()
         content.title = "\(fileName) — Failed"
         content.body = reason
-        content.sound = .defaultCritical
+        content.sound = soundEnabled ? .defaultCritical : nil
         content.categoryIdentifier = "DOWNLOAD_FAILED"
+
+        let request = UNNotificationRequest(
+            identifier: UUID().uuidString,
+            content: content,
+            trigger: nil
+        )
+        UNUserNotificationCenter.current().add(request)
+    }
+
+    /// Lightweight event notification (start/pause/stop announcements).
+    func notifyEvent(title: String, body: String) {
+        let content = UNMutableNotificationContent()
+        content.title = title
+        content.body = body
+        content.sound = nil // events are frequent; keep them silent
+
+        let request = UNNotificationRequest(
+            identifier: UUID().uuidString,
+            content: content,
+            trigger: nil
+        )
+        UNUserNotificationCenter.current().add(request)
+    }
+
+    /// Notify that a newer version is available.
+    func notifyUpdateAvailable(version: String) {
+        let content = UNMutableNotificationContent()
+        content.title = "BDM \(version) is available"
+        content.body = "Open the GitHub releases page to download the update."
+        content.sound = soundEnabled ? .default : nil
 
         let request = UNNotificationRequest(
             identifier: UUID().uuidString,
@@ -69,7 +104,7 @@ final class NotificationService: @unchecked Sendable {
         let content = UNMutableNotificationContent()
         content.title = "\(fileName) — Checksum Mismatch!"
         content.body = "The downloaded file does not match the expected hash."
-        content.sound = .defaultCritical
+        content.sound = soundEnabled ? .defaultCritical : nil
         content.categoryIdentifier = "CHECKSUM_MISMATCH"
 
         let request = UNNotificationRequest(

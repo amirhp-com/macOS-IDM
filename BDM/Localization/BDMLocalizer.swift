@@ -4,7 +4,10 @@ import SwiftUI
 /// JSON-based localization engine.
 /// Loads en.json from bundle, overlays user locale from Application Support.
 @Observable
+@MainActor
 final class BDMLocalizer {
+    static let shared = BDMLocalizer()
+
     private var strings: [String: Any] = [:]
     private var fallback: [String: Any] = [:]
     private(set) var isRTL = false

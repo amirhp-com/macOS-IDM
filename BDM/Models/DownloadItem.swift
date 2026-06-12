@@ -26,6 +26,11 @@ final class DownloadItem {
     var batchId: UUID?
     var note: String?
     var sourceDomain: String?
+    /// JSON-encoded [FinishTask] to run when this download completes.
+    var finishTasksData: String?
+    /// Optional HTTP Basic auth credentials for protected sources.
+    var username: String?
+    var password: String?
 
     @Relationship(deleteRule: .cascade)
     var segments: [DownloadSegment] = []
@@ -67,6 +72,11 @@ final class DownloadItem {
 
     var speedFormatted: String {
         "" // Updated by progress polling
+    }
+
+    var finishTasks: [FinishTask] {
+        get { FinishTask.decode(finishTasksData) }
+        set { finishTasksData = FinishTask.encode(newValue) }
     }
 
     var isActive: Bool { downloadStatus == .active }

@@ -47,6 +47,14 @@
 		A10001000001000100010028 /* BDMDownloader.xpc in CopyFiles */ = {isa = PBXBuildFile; fileRef = C20001000001000100010002 /* BDMDownloader.xpc */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		A10001000001000100010029 /* MenuBarManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10001000001000100010020 /* MenuBarManager.swift */; };
 		A1000100000100010001002A /* fa.json in Resources */ = {isa = PBXBuildFile; fileRef = B10001000001000100010021 /* fa.json */; };
+		A1000100000100010001002B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B10001000001000100010032 /* Assets.xcassets */; };
+		A1000100000100010001002C /* DownloadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10001000001000100010033 /* DownloadManager.swift */; };
+		A1000100000100010001002D /* BDMLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10001000001000100010034 /* BDMLog.swift */; };
+		A1000100000100010001002E /* UpdateChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10001000001000100010035 /* UpdateChecker.swift */; };
+		A1000100000100010001002F /* GridCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10001000001000100010036 /* GridCardView.swift */; };
+		A10001000001000100010030 /* FinishTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10001000001000100010037 /* FinishTask.swift */; };
+		A10001000001000100010031 /* EditDownloadSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10001000001000100010038 /* EditDownloadSheet.swift */; };
+		A10001000001000100010032 /* MiniProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10001000001000100010039 /* MiniProgressView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -116,8 +124,16 @@
 		B1000100000100010001001D /* SparseFileWriter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SparseFileWriter.swift; sourceTree = "<group>"; };
 		B1000100000100010001001E /* BandwidthLimiter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BandwidthLimiter.swift; sourceTree = "<group>"; };
 		B1000100000100010001001F /* ChecksumVerifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChecksumVerifier.swift; sourceTree = "<group>"; };
-		B10001000001000100010020 /* BDM.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BDM.entitlements; sourceTree = "<group>"; };
-		B10001000001000100010021 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B10001000001000100010030 /* BDM.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BDM.entitlements; sourceTree = "<group>"; };
+		B10001000001000100010031 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B10001000001000100010032 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		B10001000001000100010033 /* DownloadManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadManager.swift; sourceTree = "<group>"; };
+		B10001000001000100010034 /* BDMLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BDMLog.swift; sourceTree = "<group>"; };
+		B10001000001000100010035 /* UpdateChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateChecker.swift; sourceTree = "<group>"; };
+		B10001000001000100010036 /* GridCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridCardView.swift; sourceTree = "<group>"; };
+		B10001000001000100010037 /* FinishTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinishTask.swift; sourceTree = "<group>"; };
+		B10001000001000100010038 /* EditDownloadSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditDownloadSheet.swift; sourceTree = "<group>"; };
+		B10001000001000100010039 /* MiniProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MiniProgressView.swift; sourceTree = "<group>"; };
 		B10001000001000100010022 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B10001000001000100010023 /* BDMDownloader.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BDMDownloader.entitlements; sourceTree = "<group>"; };
 		C20001000001000100010001 /* BDM.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BDM.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -231,6 +247,7 @@
 				B10001000001000100010006 /* DetailedRowView.swift */,
 				B10001000001000100010007 /* CompactRowView.swift */,
 				B10001000001000100010008 /* MinimalRowView.swift */,
+				B10001000001000100010036 /* GridCardView.swift */,
 			);
 			path = ViewModes;
 			sourceTree = "<group>";
@@ -239,6 +256,7 @@
 			isa = PBXGroup;
 			children = (
 				B10001000001000100010009 /* AddURLsSheet.swift */,
+				B10001000001000100010038 /* EditDownloadSheet.swift */,
 			);
 			path = AddURLs;
 			sourceTree = "<group>";
@@ -257,6 +275,7 @@
 				B1000100000100010001000B /* SegmentMapView.swift */,
 				B1000100000100010001000C /* FilterBar.swift */,
 				B1000100000100010001000D /* ViewModeToggle.swift */,
+				B10001000001000100010039 /* MiniProgressView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -277,6 +296,7 @@
 				B10001000001000100010011 /* Segment.swift */,
 				B10001000001000100010012 /* ThreadRange.swift */,
 				B10001000001000100010013 /* RoutingRule.swift */,
+				B10001000001000100010037 /* FinishTask.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -304,6 +324,9 @@
 			children = (
 				B10001000001000100010015 /* XPCClient.swift */,
 				B10001000001000100010016 /* NotificationService.swift */,
+				B10001000001000100010033 /* DownloadManager.swift */,
+				B10001000001000100010034 /* BDMLog.swift */,
+				B10001000001000100010035 /* UpdateChecker.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -311,8 +334,9 @@
 		E2000100000100010001000E /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				B10001000001000100010020 /* BDM.entitlements */,
-				B10001000001000100010021 /* Info.plist */,
+				B10001000001000100010030 /* BDM.entitlements */,
+				B10001000001000100010031 /* Info.plist */,
+				B10001000001000100010032 /* Assets.xcassets */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -471,6 +495,7 @@
 			files = (
 				A1000100000100010001001F /* en.json in Resources */,
 				A1000100000100010001002A /* fa.json in Resources */,
+				A1000100000100010001002B /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -504,6 +529,13 @@
 				A1000100000100010001001D /* XPCClient.swift in Sources */,
 				A1000100000100010001001E /* NotificationService.swift in Sources */,
 				A10001000001000100010029 /* MenuBarManager.swift in Sources */,
+				A1000100000100010001002C /* DownloadManager.swift in Sources */,
+				A1000100000100010001002D /* BDMLog.swift in Sources */,
+				A1000100000100010001002E /* UpdateChecker.swift in Sources */,
+				A1000100000100010001002F /* GridCardView.swift in Sources */,
+				A10001000001000100010030 /* FinishTask.swift in Sources */,
+				A10001000001000100010031 /* EditDownloadSheet.swift in Sources */,
+				A10001000001000100010032 /* MiniProgressView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -580,6 +612,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = DFDRW6TJH5;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -644,6 +677,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = DFDRW6TJH5;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -673,7 +707,7 @@
 				CODE_SIGN_ENTITLEMENTS = BDM/Resources/BDM.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = BDM/Resources/Info.plist;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
@@ -682,7 +716,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.amirhpcom.bdm;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -699,7 +733,7 @@
 				CODE_SIGN_ENTITLEMENTS = BDM/Resources/BDM.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = BDM/Resources/Info.plist;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
@@ -708,7 +742,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.amirhpcom.bdm;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -722,10 +756,10 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = BDMDownloader/BDMDownloader.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = BDMDownloader/Info.plist;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.amirhpcom.bdm.downloader;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -739,10 +773,10 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = BDMDownloader/BDMDownloader.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = BDMDownloader/Info.plist;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.amirhpcom.bdm.downloader;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -756,9 +790,9 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.amirhpcom.bdm.tests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
@@ -773,9 +807,9 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.amirhpcom.bdm.tests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;

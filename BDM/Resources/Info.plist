@@ -9,15 +9,17 @@
 	<key>CFBundleIdentifier</key>
 	<string>com.amirhpcom.bdm</string>
 	<key>CFBundleVersion</key>
-	<string>2</string>
+	<string>3</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.1.0</string>
+	<string>1.2.0</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleExecutable</key>
 	<string>BDM</string>
 	<key>LSMinimumSystemVersion</key>
 	<string>26.0</string>
+	<key>LSMultipleInstancesProhibited</key>
+	<true/>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -29,6 +31,8 @@
 			</array>
 		</dict>
 	</array>
+	<key>NSAppleEventsUsageDescription</key>
+	<string>BDM uses System Events to shut down the Mac when a download's finish task asks for it.</string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>

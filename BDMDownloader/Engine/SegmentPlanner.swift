@@ -5,10 +5,13 @@ import BDMShared
 struct SegmentPlanner: Sendable {
 
     /// Performs a HEAD request to determine file size and range support.
-    func headCheck(url: URL) async throws -> HeadCheckResult {
+    func headCheck(url: URL, authorization: String? = nil) async throws -> HeadCheckResult {
         var request = URLRequest(url: url)
         request.httpMethod = "HEAD"
         request.timeoutInterval = 15
+        if let authorization {
+            request.setValue(authorization, forHTTPHeaderField: "Authorization")
+        }
 
         let (_, response) = try await URLSession.shared.data(for: request)
 

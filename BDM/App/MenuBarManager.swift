@@ -1,21 +1,25 @@
 import SwiftUI
 
 struct MenuBarView: View {
+    @Environment(DownloadManager.self) private var downloadManager
+    @Environment(BDMLocalizer.self) private var loc
+    @Environment(\.openSettings) private var openSettings
+
     var body: some View {
         // Active download count and total speed
-        Text("0 Active Downloads — 0 B/s")
+        Text(statusLine)
             .font(.caption)
 
         Divider()
 
-        Button("Show BDM") {
+        Button(loc.t("app.short") + " — " + loc.t("app.name")) {
             NSApp.activate(ignoringOtherApps: true)
             if let window = NSApp.windows.first(where: { $0.canBecomeMain }) {
                 window.makeKeyAndOrderFront(nil)
             }
         }
 
-        Button("Add URLs...") {
+        Button(loc.t("menu.add_urls") + "…") {
             NSApp.activate(ignoringOtherApps: true)
             if let window = NSApp.windows.first(where: { $0.canBecomeMain }) {
                 window.makeKeyAndOrderFront(nil)
@@ -25,26 +29,35 @@ struct MenuBarView: View {
         }
         .keyboardShortcut("n", modifiers: .command)
 
-        Button("Pause All") {
+        Button(loc.t("menu.pause_all")) {
             NotificationCenter.default.post(name: .menuBarPauseAll, object: nil)
         }
 
-        Button("Resume All") {
+        Button(loc.t("menu.resume_all")) {
             NotificationCenter.default.post(name: .menuBarResumeAll, object: nil)
         }
 
         Divider()
 
-        Button("Settings...") {
+        Button(loc.t("menu.settings") + "…") {
             NSApp.activate(ignoringOtherApps: true)
-            NSApp.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
+            openSettings()
         }
         .keyboardShortcut(",", modifiers: .command)
 
-        Button("Quit BDM") {
+        Button(loc.t("menu.quit")) {
             NSApplication.shared.terminate(nil)
         }
         .keyboardShortcut("q", modifiers: .command)
+    }
+
+    private var statusLine: String {
+        let count = downloadManager.activeCount
+        let speed = ByteCountFormatter.string(
+            fromByteCount: Int64(downloadManager.totalBytesPerSecond),
+            countStyle: .file
+        )
+        return "\(loc.tp("menubar.active_count", count: count)) — \(speed)/s"
     }
 }
 

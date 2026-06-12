@@ -4,8 +4,9 @@ struct FilterBar: View {
     let downloads: [DownloadItem]
     @Binding var searchText: String
     @Binding var viewMode: ViewMode
-
-    @State private var activeFilter: StatusFilter = .all
+    @Binding var statusFilter: StatusFilter
+    @Binding var sortKey: SortKey
+    @Environment(BDMLocalizer.self) private var loc
 
     var body: some View {
         HStack(spacing: 6) {
@@ -23,13 +24,14 @@ struct FilterBar: View {
 
             // Sort button
             Menu {
-                Button("Name") {}
-                Button("Size") {}
-                Button("Speed") {}
-                Button("Date Added") {}
-                Button("Status") {}
+                Picker(loc.t("sort.title"), selection: $sortKey) {
+                    ForEach(SortKey.allCases, id: \.self) { key in
+                        Text(loc.t(key.localizationKey)).tag(key)
+                    }
+                }
+                .pickerStyle(.inline)
             } label: {
-                Label("Sort", systemImage: "arrow.up.arrow.down")
+                Label(loc.t("sort.title"), systemImage: "arrow.up.arrow.down")
                     .font(.caption)
             }
             .menuStyle(.borderlessButton)
@@ -37,7 +39,7 @@ struct FilterBar: View {
             .frame(minWidth: 100)
 
             // Search
-            TextField("⌘F  Search…", text: $searchText)
+            TextField("⌘F  " + loc.t("filter.search_placeholder"), text: $searchText)
                 .textFieldStyle(.roundedBorder)
                 .font(.caption)
                 .frame(width: 150)
@@ -49,13 +51,13 @@ struct FilterBar: View {
     private func filterChip(_ filter: StatusFilter) -> some View {
         let count = countFor(filter)
         return Button {
-            activeFilter = filter
+            statusFilter = filter
         } label: {
             HStack(spacing: 3) {
-                Text(filter.displayName)
+                Text(filter.prefixSymbol + loc.t(filter.localizationKey))
                 if count > 0 {
                     Text("\(count)")
-                        .foregroundStyle(BDMColors.muted)
+                        .foregroundStyle(statusFilter == filter ? .white.opacity(0.8) : BDMColors.muted)
                 }
             }
             .font(.caption)
@@ -63,8 +65,9 @@ struct FilterBar: View {
             .padding(.vertical, 4)
         }
         .buttonStyle(.plain)
-        .background(activeFilter == filter ? BDMColors.accent : BDMColors.surface2)
-        .foregroundStyle(activeFilter == filter ? .white : filter.color)
+        .focusEffectDisabled()
+        .background(statusFilter == filter ? BDMColors.accent : BDMColors.surface2)
+        .foregroundStyle(statusFilter == filter ? .white : filter.color)
         .clipShape(Capsule())
     }
 
@@ -73,6 +76,7 @@ struct FilterBar: View {
         case .all: return downloads.count
         case .active: return downloads.filter { $0.downloadStatus == .active }.count
         case .paused: return downloads.filter { $0.downloadStatus == .paused }.count
+        case .incomplete: return downloads.filter { $0.downloadStatus != .completed }.count
         case .done: return downloads.filter { $0.downloadStatus == .completed }.count
         case .failed: return downloads.filter { $0.downloadStatus == .failed }.count
         }
@@ -80,15 +84,27 @@ struct FilterBar: View {
 }
 
 enum StatusFilter: CaseIterable {
-    case all, active, paused, done, failed
+    case all, active, paused, incomplete, done, failed
 
-    var displayName: String {
+    var localizationKey: String {
         switch self {
-        case .all: return "All"
-        case .active: return "▶ Active"
-        case .paused: return "⏸ Paused"
-        case .done: return "✓ Done"
-        case .failed: return "✗ Failed"
+        case .all: return "filter.all"
+        case .active: return "filter.active"
+        case .paused: return "filter.paused"
+        case .incomplete: return "sidebar.incomplete"
+        case .done: return "filter.done"
+        case .failed: return "filter.failed"
+        }
+    }
+
+    var prefixSymbol: String {
+        switch self {
+        case .all: return ""
+        case .active: return "▶ "
+        case .paused: return "⏸ "
+        case .incomplete: return "◌ "
+        case .done: return "✓ "
+        case .failed: return "✗ "
         }
     }
 
@@ -97,6 +113,7 @@ enum StatusFilter: CaseIterable {
         case .all: return .primary
         case .active: return BDMColors.accent
         case .paused: return BDMColors.yellow
+        case .incomplete: return BDMColors.accent2
         case .done: return BDMColors.green
         case .failed: return BDMColors.red
         }

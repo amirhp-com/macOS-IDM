@@ -1,16 +1,18 @@
 import SwiftUI
 
-/// Segmented control for switching between Detailed / Compact / Minimal views.
+/// Segmented control for switching between the list view modes.
 struct ViewModeToggle: View {
     @Binding var viewMode: ViewMode
 
     var body: some View {
         Picker("View", selection: $viewMode) {
-            Image(systemName: "list.bullet").tag(ViewMode.detailed)
-            Image(systemName: "list.dash").tag(ViewMode.compact)
-            Image(systemName: "line.3.horizontal").tag(ViewMode.minimal)
+            ForEach(ViewMode.allCases, id: \.self) { mode in
+                Image(systemName: mode.systemImage)
+                    .help(mode.displayName)
+                    .tag(mode)
+            }
         }
         .pickerStyle(.segmented)
-        .frame(width: 100)
+        .frame(width: 170)
     }
 }

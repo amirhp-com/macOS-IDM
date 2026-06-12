@@ -1,26 +1,30 @@
+import ServiceManagement
+import SwiftData
 import SwiftUI
+import UniformTypeIdentifiers
 
 struct SettingsView: View {
     @Environment(AppearanceManager.self) private var appearance
+    @Environment(BDMLocalizer.self) private var loc
 
     var body: some View {
         TabView {
             GeneralSettingsTab()
-                .tabItem { Label("General", systemImage: "gearshape") }
+                .tabItem { Label(loc.t("settings.general"), systemImage: "gearshape") }
             DownloadsSettingsTab()
-                .tabItem { Label("Downloads", systemImage: "arrow.down.circle") }
+                .tabItem { Label(loc.t("settings.downloads"), systemImage: "arrow.down.circle") }
             FoldersSettingsTab()
-                .tabItem { Label("Folders & Routing", systemImage: "folder") }
+                .tabItem { Label(loc.t("settings.folders"), systemImage: "folder") }
             NetworkSettingsTab()
-                .tabItem { Label("Network", systemImage: "network") }
+                .tabItem { Label(loc.t("settings.network"), systemImage: "network") }
             BrowserSettingsTab()
-                .tabItem { Label("Browser", systemImage: "globe") }
+                .tabItem { Label(loc.t("settings.browser"), systemImage: "globe") }
             NotificationsSettingsTab()
-                .tabItem { Label("Notifications", systemImage: "bell") }
+                .tabItem { Label(loc.t("settings.notifications"), systemImage: "bell") }
             LanguageSettingsTab()
-                .tabItem { Label("Language", systemImage: "globe.americas") }
+                .tabItem { Label(loc.t("settings.language"), systemImage: "globe.americas") }
             AdvancedSettingsTab()
-                .tabItem { Label("Advanced", systemImage: "wrench.and.screwdriver") }
+                .tabItem { Label(loc.t("settings.advanced"), systemImage: "wrench.and.screwdriver") }
         }
         .frame(width: 600, height: 450)
     }
@@ -30,9 +34,9 @@ struct SettingsView: View {
 
 struct GeneralSettingsTab: View {
     @Environment(AppearanceManager.self) private var appearance
-    @AppStorage("bdm.general.launchAtLogin") private var launchAtLogin = true
+    @AppStorage("bdm.general.launchAtLogin") private var launchAtLogin = false
     @AppStorage("bdm.general.startMinimized") private var startMinimized = false
-    @AppStorage("bdm.general.showDockIcon") private var showDockIcon = true
+    @AppStorage("bdm.general.iconMode") private var iconModeRaw = AppIconMode.both.rawValue
     @AppStorage("bdm.general.checkUpdates") private var checkUpdates = true
     @AppStorage("bdm.general.confirmRemove") private var confirmRemove = true
 
@@ -40,9 +44,44 @@ struct GeneralSettingsTab: View {
         Form {
             Section("Startup") {
                 Toggle("Launch at login", isOn: $launchAtLogin)
+                    .onChange(of: launchAtLogin) { _, enabled in
+                        do {
+                            if enabled {
+                                try SMAppService.mainApp.register()
+                            } else {
+                                try SMAppService.mainApp.unregister()
+                            }
+                        } catch {
+                            print("[BDM] Launch at login: \(error)")
+                        }
+                    }
                 Toggle("Start minimized to menu bar", isOn: $startMinimized)
-                Toggle("Show Dock icon", isOn: $showDockIcon)
+                Picker("Show app icon in", selection: $iconModeRaw) {
+                    ForEach(AppIconMode.allCases, id: \.rawValue) { mode in
+                        Text(mode.displayName).tag(mode.rawValue)
+                    }
+                }
+                .onChange(of: iconModeRaw) { _, raw in
+                    let mode = AppIconMode(rawValue: raw) ?? .both
+                    appearance.showMenuBarIcon = mode.showsMenuBar
+                    AppIconMode.apply(mode)
+                }
                 Toggle("Check for updates automatically", isOn: $checkUpdates)
+                HStack {
+                    Button("Check for Updates Now") {
+                        Task { await UpdateChecker.shared.check() }
+                    }
+                    if UpdateChecker.shared.updateAvailable {
+                        Button("Open Releases Page") {
+                            NSWorkspace.shared.open(URL(string: "https://github.com/amirhp-com/macOS-IDM/releases")!)
+                        }
+                    }
+                }
+                if let updateStatus = UpdateChecker.shared.statusMessage {
+                    Text(updateStatus)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
             }
 
             Section("Appearance") {
@@ -58,6 +97,7 @@ struct GeneralSettingsTab: View {
                     }
                 }
                 Toggle("Show sidebar on launch", isOn: $app.showSidebar)
+                Toggle("Show preview panel", isOn: $app.showPreview)
                 Toggle("Liquid Glass background", isOn: $app.glassEnabled)
                 Text("Semi-transparent window with vibrancy. Disable for solid background.")
                     .font(.caption)
@@ -125,43 +165,107 @@ struct DownloadsSettingsTab: View {
 // MARK: - Folders & Routing Tab
 
 struct FoldersSettingsTab: View {
+    @Environment(\.modelContext) private var modelContext
+    @Query(sort: \RoutingRule.order) private var rules: [RoutingRule]
+
     var body: some View {
-        VStack(alignment: .leading) {
-            Text("Files are matched top-to-bottom. First matching rule wins. Drag to reorder.")
+        VStack(alignment: .leading, spacing: 8) {
+            Text("Files added to the default location (~/Downloads) are matched top-to-bottom; the first matching rule picks the folder. Folders must stay inside ~/Downloads — the sandbox blocks writes elsewhere.")
                 .font(.caption)
                 .foregroundStyle(.secondary)
                 .padding(.horizontal)
                 .padding(.top)
 
-            // Routing rules table placeholder
             List {
-                routingRow(extensions: ".dmg, .pkg, .app", folder: "~/Downloads/Apps/", segments: "Auto")
-                routingRow(extensions: ".xip, .zip, .tar.gz, .rar", folder: "~/Downloads/Archives/", segments: "16")
-                routingRow(extensions: ".iso, .ipsw, .img", folder: "~/Downloads/Disk Images/", segments: "32")
-                routingRow(extensions: ".pdf, .epub, .docx", folder: "~/Documents/", segments: "4")
-                routingRow(extensions: ".mp3, .flac, .aac, .wav", folder: "~/Music/Downloads/", segments: "Auto")
-                routingRow(extensions: "* (default)", folder: "~/Downloads/", segments: "Auto")
+                ForEach(rules) { rule in
+                    RoutingRuleRow(rule: rule)
+                }
+                .onDelete { offsets in
+                    for index in offsets {
+                        modelContext.delete(rules[index])
+                    }
+                    try? modelContext.save()
+                }
             }
 
-            Button("+ Add rule…") {}
-                .font(.caption)
-                .padding(.horizontal)
-                .padding(.bottom)
+            HStack {
+                Button("+ Add Rule") { addRule() }
+                if rules.isEmpty {
+                    Button("Add Default Rules") { seedDefaults() }
+                }
+                Spacer()
+                Text("Swipe or ⌫ to delete a rule")
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+            }
+            .font(.caption)
+            .padding(.horizontal)
+            .padding(.bottom)
         }
     }
 
-    private func routingRow(extensions: String, folder: String, segments: String) -> some View {
-        HStack {
-            Text(extensions)
+    private func addRule() {
+        let rule = RoutingRule(
+            order: (rules.map(\.order).max() ?? -1) + 1,
+            ruleType: .fileExtension,
+            pattern: ".ext",
+            destinationFolder: "~/Downloads/"
+        )
+        modelContext.insert(rule)
+        try? modelContext.save()
+    }
+
+    private func seedDefaults() {
+        let defaults: [(String, String, Int?)] = [
+            (".dmg,.pkg,.app", "~/Downloads/Apps/", nil),
+            (".xip,.zip,.tar.gz,.rar,.7z", "~/Downloads/Archives/", 16),
+            (".iso,.ipsw,.img", "~/Downloads/Disk Images/", 32),
+            (".pdf,.epub,.docx,.txt", "~/Downloads/Documents/", 4),
+            (".mp3,.flac,.aac,.wav", "~/Downloads/Music/", nil),
+        ]
+        for (index, rule) in defaults.enumerated() {
+            modelContext.insert(RoutingRule(
+                order: index,
+                ruleType: .fileExtension,
+                pattern: rule.0,
+                destinationFolder: rule.1,
+                segmentOverride: rule.2
+            ))
+        }
+        try? modelContext.save()
+    }
+}
+
+private struct RoutingRuleRow: View {
+    @Bindable var rule: RoutingRule
+
+    var body: some View {
+        HStack(spacing: 8) {
+            TextField("Extensions", text: $rule.pattern)
                 .font(.system(.caption, design: .monospaced))
-                .frame(maxWidth: .infinity, alignment: .leading)
-            Text(folder)
+                .textFieldStyle(.roundedBorder)
+                .frame(maxWidth: .infinity)
+                .help("Comma-separated extensions like .zip,.rar — or a domain when type is Domain")
+            Picker("", selection: $rule.ruleType) {
+                Text("Extension").tag(RoutingRuleType.fileExtension.rawValue)
+                Text("Domain").tag(RoutingRuleType.domain.rawValue)
+            }
+            .frame(width: 100)
+            TextField("Folder", text: $rule.destinationFolder)
                 .font(.system(.caption2, design: .monospaced))
-                .foregroundStyle(.secondary)
-                .frame(width: 180, alignment: .leading)
-            Text(segments)
-                .font(.caption)
-                .frame(width: 50)
+                .textFieldStyle(.roundedBorder)
+                .frame(width: 190)
+            Picker("", selection: Binding(
+                get: { rule.segmentOverride ?? 0 },
+                set: { rule.segmentOverride = $0 == 0 ? nil : $0 }
+            )) {
+                Text("Auto").tag(0)
+                Text("4").tag(4)
+                Text("8").tag(8)
+                Text("16").tag(16)
+                Text("32").tag(32)
+            }
+            .frame(width: 70)
         }
     }
 }
@@ -169,6 +273,7 @@ struct FoldersSettingsTab: View {
 // MARK: - Network Tab
 
 struct NetworkSettingsTab: View {
+    @Environment(DownloadManager.self) private var downloadManager
     @AppStorage("bdm.network.speedLimit") private var speedLimit = 0
     @AppStorage("bdm.network.throttleOnBattery") private var throttleOnBattery = true
     @AppStorage("bdm.network.batteryLimit") private var batteryLimit = 5
@@ -260,12 +365,18 @@ struct NetworkSettingsTab: View {
         }
         .formStyle(.grouped)
         .padding()
+        .onChange(of: speedLimit) { _, _ in downloadManager.applyEngineSettings() }
+        .onChange(of: throttleOnBattery) { _, _ in downloadManager.applyEngineSettings() }
+        .onChange(of: batteryLimit) { _, _ in downloadManager.applyEngineSettings() }
     }
 }
 
 // MARK: - Browser Tab
 
 struct BrowserSettingsTab: View {
+    @AppStorage("bdm.browser.captureEnabled") private var captureEnabled = true
+    @AppStorage("bdm.browser.captureConfirm") private var captureConfirm = false
+
     var body: some View {
         Form {
             Section("Browser Extensions") {
@@ -289,8 +400,8 @@ struct BrowserSettingsTab: View {
                 }
             }
             Section("Capture") {
-                Toggle("Capture downloads from browser", isOn: .constant(true))
-                Toggle("Show confirmation before capturing", isOn: .constant(false))
+                Toggle("Capture downloads from browser", isOn: $captureEnabled)
+                Toggle("Show confirmation before capturing", isOn: $captureConfirm)
             }
         }
         .formStyle(.grouped)
@@ -305,11 +416,15 @@ struct NotificationsSettingsTab: View {
     @AppStorage("bdm.notif.onBatch") private var onBatch = true
     @AppStorage("bdm.notif.onError") private var onError = true
     @AppStorage("bdm.notif.onChecksum") private var onChecksum = true
+    @AppStorage("bdm.notif.onStart") private var onStart = true
+    @AppStorage("bdm.notif.onPauseStop") private var onPauseStop = true
     @AppStorage("bdm.notif.sound") private var sound = true
 
     var body: some View {
         Form {
             Section("Events") {
+                Toggle("Download started / resumed", isOn: $onStart)
+                Toggle("Download paused / stopped", isOn: $onPauseStop)
                 Toggle("Download complete", isOn: $onComplete)
                 Toggle("Batch complete", isOn: $onBatch)
                 Toggle("Download failed / error", isOn: $onError)
@@ -327,19 +442,19 @@ struct NotificationsSettingsTab: View {
 // MARK: - Language Tab
 
 struct LanguageSettingsTab: View {
-    @State private var localizer = BDMLocalizer()
+    @Environment(BDMLocalizer.self) private var localizer
     @AppStorage("bdm.language") private var selectedLocale = "en"
 
     var body: some View {
         Form {
-            Section("Language") {
+            Section(localizer.t("settings.language")) {
                 Text("BDM uses JSON-based localization. Select a language below or add your own.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
 
                 let locales = localizer.availableLocales()
 
-                Picker("Language", selection: $selectedLocale) {
+                Picker(localizer.t("settings.language"), selection: $selectedLocale) {
                     ForEach(locales, id: \.code) { locale in
                         Text("\(locale.name) (\(Int(locale.completion * 100))%)")
                             .tag(locale.code)
@@ -362,22 +477,82 @@ struct LanguageSettingsTab: View {
 // MARK: - Advanced Tab
 
 struct AdvancedSettingsTab: View {
+    @AppStorage("bdm.debug.verboseLogging") private var verboseLogging = false
+    @State private var showResetConfirm = false
+    @State private var statusMessage: String?
+
     var body: some View {
         Form {
             Section("Data") {
-                Button("Export Settings…") {}
-                Button("Import Settings…") {}
-                Button("Reset to Defaults") {}
+                Button("Export Settings…") { exportSettings() }
+                Button("Import Settings…") { importSettings() }
+                Button("Reset to Defaults") { showResetConfirm = true }
                     .foregroundStyle(.red)
+                if let statusMessage {
+                    Text(statusMessage)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
             }
             Section("Debug") {
-                Toggle("Verbose logging to Console.app", isOn: .constant(false))
-                Text("Settings file: ~/Library/Application Support/BDM/settings.json")
+                Toggle("Verbose logging to Console.app", isOn: $verboseLogging)
+                Text("Settings are stored in UserDefaults under the bdm.* prefix.")
                     .font(.system(.caption, design: .monospaced))
                     .foregroundStyle(.secondary)
             }
         }
         .formStyle(.grouped)
         .padding()
+        .confirmationDialog("Reset all settings to defaults?", isPresented: $showResetConfirm) {
+            Button("Reset", role: .destructive) { resetSettings() }
+            Button("Cancel", role: .cancel) {}
+        }
+    }
+
+    private var bdmSettings: [String: Any] {
+        UserDefaults.standard.dictionaryRepresentation().filter { $0.key.hasPrefix("bdm.") }
+    }
+
+    private func exportSettings() {
+        let panel = NSSavePanel()
+        panel.nameFieldStringValue = "bdm-settings.json"
+        panel.allowedContentTypes = [.json]
+        guard panel.runModal() == .OK, let url = panel.url else { return }
+        do {
+            let data = try JSONSerialization.data(withJSONObject: bdmSettings, options: [.prettyPrinted, .sortedKeys])
+            try data.write(to: url)
+            statusMessage = "Exported \(bdmSettings.count) settings."
+        } catch {
+            statusMessage = "Export failed: \(error.localizedDescription)"
+        }
+    }
+
+    private func importSettings() {
+        let panel = NSOpenPanel()
+        panel.allowedContentTypes = [.json]
+        panel.allowsMultipleSelection = false
+        guard panel.runModal() == .OK, let url = panel.url else { return }
+        do {
+            let data = try Data(contentsOf: url)
+            guard let json = try JSONSerialization.jsonObject(with: data) as? [String: Any] else {
+                statusMessage = "Import failed: not a settings file."
+                return
+            }
+            var applied = 0
+            for (key, value) in json where key.hasPrefix("bdm.") {
+                UserDefaults.standard.set(value, forKey: key)
+                applied += 1
+            }
+            statusMessage = "Imported \(applied) settings."
+        } catch {
+            statusMessage = "Import failed: \(error.localizedDescription)"
+        }
+    }
+
+    private func resetSettings() {
+        for key in bdmSettings.keys {
+            UserDefaults.standard.removeObject(forKey: key)
+        }
+        statusMessage = "Settings reset. Restart BDM to fully apply."
     }
 }

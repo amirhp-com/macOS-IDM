@@ -2,19 +2,34 @@ import SwiftUI
 import SwiftData
 
 struct AddURLsSheet: View {
+    var prefillText: String = ""
+
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.modelContext) private var modelContext
+    @Environment(DownloadManager.self) private var downloadManager
+    @Environment(BDMLocalizer.self) private var loc
 
     @State private var urlText = ""
     @State private var savePath = "~/Downloads/"
-    @State private var segmentCount = 16
-    @State private var threadsPerSegment = 4
+    @State private var segmentCount = UserDefaults.standard.object(forKey: "bdm.engine.defaultSegments") as? Int ?? 16
+    @State private var threadsPerSegment = UserDefaults.standard.object(forKey: "bdm.engine.threadsPerSegment") as? Int ?? 4
     @State private var startOption: StartOption = .immediately
+    @State private var showAdvanced = false
+    @State private var username = ""
+    @State private var password = ""
+    @State private var finishTasks: [FinishTask] = []
 
     private enum StartOption: String, CaseIterable {
-        case immediately = "Immediately"
-        case paused = "Add paused"
-        case scheduled = "Scheduled"
+        case immediately
+        case paused
+        case scheduled
+
+        var localizationKey: String {
+            switch self {
+            case .immediately: return "add.immediately"
+            case .paused: return "add.paused"
+            case .scheduled: return "add.scheduled"
+            }
+        }
     }
 
     private var parsedURLs: [URL] {
@@ -29,10 +44,10 @@ struct AddURLsSheet: View {
         VStack(spacing: 0) {
             // Header
             HStack {
-                Text("Add Downloads")
+                Text(loc.t("add.title"))
                     .font(.headline)
                 if !parsedURLs.isEmpty {
-                    Text("\(parsedURLs.count) URLs detected")
+                    Text(loc.t("add.urls_detected", ["n": "\(parsedURLs.count)"]))
                         .font(.caption2)
                         .padding(.horizontal, 7)
                         .padding(.vertical, 2)
@@ -76,17 +91,17 @@ struct AddURLsSheet: View {
 
             // Options
             VStack(spacing: 10) {
-                optionRow("Save to") {
+                optionRow(loc.t("add.save_to")) {
                     TextField("Path", text: $savePath)
                         .textFieldStyle(.roundedBorder)
                         .font(.caption)
-                    Button("Browse…") {
+                    Button(loc.t("add.browse")) {
                         browseFolder()
                     }
                     .font(.caption)
                 }
 
-                optionRow("Segments") {
+                optionRow(loc.t("add.segments")) {
                     Picker("", selection: $segmentCount) {
                         Text("Auto").tag(0)
                         Text("4").tag(4)
@@ -97,7 +112,7 @@ struct AddURLsSheet: View {
                     .frame(maxWidth: .infinity)
                 }
 
-                optionRow("Threads/Seg") {
+                optionRow(loc.t("add.threads")) {
                     Picker("", selection: $threadsPerSegment) {
                         Text("Auto").tag(0)
                         Text("1").tag(1)
@@ -107,14 +122,38 @@ struct AddURLsSheet: View {
                     .frame(maxWidth: .infinity)
                 }
 
-                optionRow("Start") {
+                optionRow(loc.t("add.start")) {
                     Picker("", selection: $startOption) {
                         ForEach(StartOption.allCases, id: \.self) { option in
-                            Text(option.rawValue).tag(option)
+                            Text(loc.t(option.localizationKey)).tag(option)
                         }
                     }
                     .frame(maxWidth: .infinity)
                 }
+
+                DisclosureGroup(loc.t("add.advanced"), isExpanded: $showAdvanced) {
+                    VStack(spacing: 8) {
+                        optionRow(loc.t("edit.username")) {
+                            TextField("", text: $username)
+                                .textFieldStyle(.roundedBorder)
+                                .font(.caption)
+                        }
+                        optionRow(loc.t("edit.password")) {
+                            SecureField("", text: $password)
+                                .textFieldStyle(.roundedBorder)
+                                .font(.caption)
+                        }
+                        HStack(alignment: .top) {
+                            Text(loc.t("task.section"))
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                                .frame(width: 90, alignment: .trailing)
+                            FinishTaskListEditor(tasks: $finishTasks)
+                        }
+                    }
+                    .padding(.top, 6)
+                }
+                .font(.caption)
             }
             .padding()
 
@@ -123,9 +162,9 @@ struct AddURLsSheet: View {
             // Footer
             HStack {
                 Spacer()
-                Button("Cancel") { dismiss() }
+                Button(loc.t("add.cancel")) { dismiss() }
                     .keyboardShortcut(.cancelAction)
-                Button("Download \(parsedURLs.count) File\(parsedURLs.count == 1 ? "" : "s") →") {
+                Button(loc.t("add.download_n", ["n": "\(parsedURLs.count)"]) + " →") {
                     addDownloads()
                     dismiss()
                 }
@@ -135,38 +174,40 @@ struct AddURLsSheet: View {
             .padding()
         }
         .frame(width: 520)
+        .onAppear {
+            if !prefillText.isEmpty {
+                urlText = prefillText
+            }
+        }
     }
 
     private func optionRow<Content: View>(_ label: String, @ViewBuilder content: () -> Content) -> some View {
         HStack {
             Text(label)
                 .font(.caption)
-                .foregroundStyle(BDMColors.muted)
+                .foregroundStyle(.secondary)
                 .frame(width: 90, alignment: .trailing)
             content()
         }
     }
 
     private func addDownloads() {
-        for url in parsedURLs {
-            let item = DownloadItem(
-                url: url.absoluteString,
-                fileName: url.lastPathComponent,
-                destinationPath: (savePath as NSString).appendingPathComponent(url.lastPathComponent),
-                segmentCount: segmentCount > 0 ? segmentCount : 16,
-                threadsPerSegment: threadsPerSegment > 0 ? threadsPerSegment : 4
-            )
-            switch startOption {
-            case .immediately:
-                item.downloadStatus = .active
-            case .paused:
-                item.downloadStatus = .paused
-            case .scheduled:
-                item.downloadStatus = .queued
-                item.note = "Scheduled — will start during configured schedule window"
-            }
-            modelContext.insert(item)
+        let behavior: DownloadManager.StartBehavior
+        switch startOption {
+        case .immediately: behavior = .immediately
+        case .paused: behavior = .paused
+        case .scheduled: behavior = .queued
         }
+        downloadManager.addDownloads(
+            urls: parsedURLs,
+            savePath: savePath,
+            segments: segmentCount,
+            threadsPerSegment: threadsPerSegment,
+            behavior: behavior,
+            username: username.isEmpty ? nil : username,
+            password: username.isEmpty ? nil : password,
+            finishTasks: finishTasks
+        )
     }
 
     private func browseFolder() {
